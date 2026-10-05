@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forma — Virtual Try-On</title>
+    <meta name="theme-color" content="#17231f" />
+    <meta name="description" content="Simulasi virtual try-on pribadi yang berjalan secara lokal." />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Forma home"><span class="brand-mark">F</span>FORMA</a>
+      <span class="header-tag">Web + mobile fitting room</span>
+      <span class="status"><i></i> Local-only</span>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <p class="eyebrow">Try it before you buy it</p>
+        <h1>Pakaian online,<br /><em>lebih terasa pas.</em></h1>
+        <p class="hero-copy">Buka di laptop atau HP: buat avatar proporsional dari foto dan data tubuhmu, lalu lihat simulasi baju <em>dan</em> celana sebelum checkout.</p>
+        <div class="hero-note"><span>01</span> Foto tetap di perangkatmu. Prototipe ini tidak mengunggah data ke server.</div>
+      </section>
+
+      <section class="workspace" aria-label="Virtual try-on workspace">
+        <form id="tryon-form" novalidate>
+          <div class="panel profile-panel">
+            <div class="panel-heading"><span class="step">01</span><div><h2>Profil kamu</h2><p>Unggah foto seluruh badan yang jelas.</p></div></div>
+            <label class="upload-zone" id="person-upload-zone" for="person-photo">
+              <input id="person-photo" type="file" accept="image/png,image/jpeg,image/webp" />
+              <div class="upload-placeholder" id="person-placeholder"><span class="upload-icon">↑</span><strong>Upload foto kamu</strong><small>JPG, PNG, atau WEBP · maks. 10 MB</small></div>
+              <img id="person-preview" alt="Pratinjau foto pengguna" />
+              <button class="clear-image" id="clear-person" type="button" aria-label="Hapus foto">×</button>
+            </label>
+            <p class="photo-tip">Tip: Berdiri tegak menghadap kamera, tangan sedikit menjauh dari badan, dengan pencahayaan rata.</p>
+
+            <div class="fields two-col">
+              <label>Tinggi badan <span class="unit">cm</span><input id="height" inputmode="numeric" type="number" min="120" max="230" placeholder="contoh 165" required /></label>
+              <label>Berat badan <span class="unit">kg</span><input id="weight" inputmode="decimal" type="number" min="30" max="250" step="0.1" placeholder="contoh 58" required /></label>
+            </div>
+            <div class="metrics" id="body-metrics" hidden>
+              <div><span>Estimasi BMI</span><strong id="bmi-value">—</strong></div>
+              <div><span>Rentang torso*</span><strong id="torso-value">—</strong></div>
+            </div>
+          </div>
+
+          <div class="panel garment-panel">
+            <div class="panel-heading"><span class="step">02</span><div><h2>Baju yang ingin dicoba</h2><p>Foto produk tampak depan, dengan latar polos, bekerja paling baik.</p></div></div>
+            <label class="upload-zone garment-zone" id="top-upload-zone" for="top-photo">
+              <input id="top-photo" type="file" accept="image/png,image/jpeg,image/webp" />
+              <div class="upload-placeholder"><span class="upload-icon">↑</span><strong>Upload foto baju</strong><small>JPG, PNG, atau WEBP</small></div>
+              <img id="top-preview" alt="Pratinjau baju" />
+              <button class="clear-image" id="clear-top" type="button" aria-label="Hapus foto baju">×</button>
+            </label>
+            <div class="fields garment-fields">
+              <label>Panjang baju <span class="unit">cm</span><input id="top-length" inputmode="decimal" type="number" min="20" max="180" step="0.5" placeholder="contoh 68" required /></label>
+              <label>Lebar dada (pit-to-pit) <span class="unit">cm</span><input id="top-width" inputmode="decimal" type="number" min="20" max="120" step="0.5" placeholder="contoh 52" required /></label>
+            </div>
+            <p class="measurement-note">Ukur pakaian dalam keadaan dibentangkan. Lebar akan dikonversi menjadi keliling dada ± 2× lebar.</p>
+          </div>
+
+          <div class="panel garment-panel">
+            <div class="panel-heading"><span class="step">03</span><div><h2>Celana yang ingin dicoba</h2><p>Gunakan foto celana panjang atau rok dari tampak depan.</p></div></div>
+            <label class="upload-zone garment-zone" id="bottom-upload-zone" for="bottom-photo">
+              <input id="bottom-photo" type="file" accept="image/png,image/jpeg,image/webp" />
+              <div class="upload-placeholder"><span class="upload-icon">↑</span><strong>Upload foto celana</strong><small>JPG, PNG, atau WEBP</small></div>
+              <img id="bottom-preview" alt="Pratinjau celana" />
+              <button class="clear-image" id="clear-bottom" type="button" aria-label="Hapus foto celana">×</button>
+            </label>
+            <div class="fields garment-fields">
+              <label>Panjang celana <span class="unit">cm</span><input id="bottom-length" inputmode="decimal" type="number" min="25" max="150" step="0.5" placeholder="contoh 98" required /></label>
+              <label>Lebar pinggang <span class="unit">cm</span><input id="bottom-width" inputmode="decimal" type="number" min="20" max="90" step="0.5" placeholder="contoh 36" required /></label>
+            </div>
+            <p class="measurement-note">Panjang diukur dari pinggang hingga ujung. Lebar pinggang dibentangkan rata dan dikonversi menjadi keliling ± 2× lebar.</p>
+          </div>
+
+          <div id="form-error" class="form-error" role="alert" aria-live="polite"></div>
+          <button class="primary-button" type="submit"><span>Buat simulasi try-on</span><span class="button-arrow">↗</span></button>
+        </form>
+
+        <aside class="result-panel" aria-live="polite">
+          <div class="result-heading"><div><p class="eyebrow">Your fitting room</p><h2>Hasil try-on</h2></div><button id="reset-all" type="button" class="text-button">Mulai ulang</button></div>
+          <div class="fitting-stage empty" id="fitting-stage">
+            <div class="stage-empty" id="stage-empty"><span>✦</span><h3>Avatar kamu akan muncul di sini</h3><p>Lengkapi profil dan pakaian untuk melihat estimasi proporsi &amp; fit.</p></div>
+            <div class="avatar-canvas" id="avatar-canvas" aria-label="Simulasi avatar dan pakaian">
+              <div class="photo-silhouette" id="photo-silhouette"></div>
+              <div class="avatar-body" id="avatar-body"><div class="avatar-head"></div><div class="avatar-neck"></div><div class="avatar-torso"></div><div class="avatar-arm arm-left"></div><div class="avatar-arm arm-right"></div><div class="avatar-leg leg-left"></div><div class="avatar-leg leg-right"></div></div>
+              <div class="garment-overlay top-overlay" id="top-overlay"><img id="top-on-avatar" alt="Baju di avatar" /><div class="garment-fallback"></div></div>
+              <div class="bottom-overlay" id="bottom-overlay"><img id="bottom-on-avatar" alt="Celana di avatar" /><div class="bottom-fallback"></div></div>
+              <div class="scale-line"><span id="height-label">— cm</span></div>
+            </div>
+          </div>
+          <div class="fit-summary" id="fit-summary" hidden>
+            <div class="fit-badge" id="top-fit-badge">—</div>
+            <div><p id="top-fit-title">Menyiapkan estimasi baju</p><small id="top-fit-description">—</small></div>
+          </div>
+          <div class="fit-summary bottom-summary" id="bottom-summary" hidden>
+            <div class="fit-badge" id="bottom-fit-badge">—</div>
+            <div><p id="bottom-fit-title">Menyiapkan estimasi celana</p><small id="bottom-fit-description">—</small></div>
+          </div>
+          <div class="result-stats" id="result-stats" hidden>
+            <div><span>Estimasi lebar tubuh</span><strong id="body-width-result">—</strong></div>
+            <div><span>Panjang baju vs torso</span><strong id="top-length-result">—</strong></div>
+            <div><span>Panjang celana vs kaki</span><strong id="bottom-length-result">—</strong></div>
+          </div>
+          <p class="disclaimer">*Perhitungan awal menggunakan tinggi dan berat. Foto tunggal tidak bisa mengukur bentuk tubuh atau lingkar dada dengan akurasi klinis.</p>
+        </aside>
+      </section>
+
+      <section class="quick-start" aria-label="Cara memakai Forma">
+        <p class="eyebrow">Cara pakai</p>
+        <div class="quick-start-grid"><div><span>1</span><strong>Masukkan profil</strong><p>Upload foto seluruh badan, tinggi, dan berat.</p></div><div><span>2</span><strong>Tambah outfit</strong><p>Upload baju dan celana beserta ukurannya.</p></div><div><span>3</span><strong>Lihat estimasi</strong><p>Bandingkan panjang serta lebar dengan avatar.</p></div></div>
+      </section>
+
+      <section class="how-it-works">
+        <p class="eyebrow">What this prototype does</p>
+        <div class="explain-grid"><article><span>01</span><h3>Avatar proporsional</h3><p>Rasio tinggi, berat, dan foto membentuk siluet non-kartun dengan kepala dan badan yang seimbang.</p></article><article><span>02</span><h3>Baju + celana</h3><p>Lebar dan panjang atasan serta bawahan dibandingkan terhadap torso, pinggang, dan panjang kaki.</p></article><article><span>03</span><h3>Pribadi secara lokal</h3><p>Tidak ada analitik, akun, atau unggahan. Semua simulasi dan foto diproses hanya di browser perangkatmu.</p></article></div>
+      </section>
+    </main>
+    <footer>FORMA <span>·</span> Local, private, and ready on web or mobile.</footer>
+    <script src="app.js"></script>
+  </body>
+</html>
