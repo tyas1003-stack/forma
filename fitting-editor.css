@@ -1,26 +1,19 @@
-.person-stage-photo {
-  display: none;
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  background: #e9ece4;
-}
-
-.avatar-canvas.photo-mode .person-stage-photo { display: block; }
-.avatar-canvas.photo-mode .avatar-body,
-.avatar-canvas.photo-mode .photo-silhouette { display: none !important; }
-.avatar-canvas.photo-mode .scale-line { z-index: 5; }
-.avatar-canvas.photo-mode .garment-overlay,
-.avatar-canvas.photo-mode .bottom-overlay { z-index: 4; cursor: grab; touch-action: none; overflow: visible; }
-.avatar-canvas.photo-mode .garment-overlay:active,
-.avatar-canvas.photo-mode .bottom-overlay:active { cursor: grabbing; }
-.avatar-canvas.photo-mode .garment-overlay img,
-.avatar-canvas.photo-mode .bottom-overlay img { object-fit: contain; mix-blend-mode: normal; filter: drop-shadow(0 3px 5px rgba(0,0,0,.16)); }
-.avatar-canvas.photo-mode .garment-fallback,
-.avatar-canvas.photo-mode .bottom-fallback { display: none; }
+.avatar-canvas.avatar-mode .photo-silhouette { display: none !important; }
+.avatar-canvas.avatar-mode .avatar-body { display: block; z-index: 2; }
+.avatar-canvas.avatar-mode .avatar-head { background:#ce9370; box-shadow:inset 0 0 0 2px rgba(255,255,255,.35); }
+.avatar-canvas.avatar-mode .scale-line { z-index: 5; }
+.avatar-canvas.avatar-mode .garment-overlay,
+.avatar-canvas.avatar-mode .bottom-overlay { z-index: 4; cursor: grab; touch-action: none; }
+.avatar-canvas.avatar-mode .garment-overlay { clip-path: polygon(18% 0, 35% 0, 42% 6%, 58% 6%, 65% 0, 82% 0, 100% 19%, 82% 35%, 78% 100%, 22% 100%, 18% 35%, 0 19%); }
+.avatar-canvas.avatar-mode .bottom-overlay.skirt { clip-path: polygon(22% 0, 78% 0, 96% 100%, 4% 100%); }
+.avatar-canvas.avatar-mode .bottom-overlay.pants { clip-path: polygon(10% 0, 90% 0, 96% 100%, 56% 100%, 50% 48%, 44% 100%, 4% 100%); }
+.avatar-canvas.avatar-mode .garment-overlay:active,
+.avatar-canvas.avatar-mode .bottom-overlay:active { cursor: grabbing; }
+.avatar-canvas.avatar-mode .garment-overlay img,
+.avatar-canvas.avatar-mode .bottom-overlay img { object-fit: cover; mix-blend-mode: multiply; filter: saturate(.92) contrast(1.05) drop-shadow(0 3px 5px rgba(0,0,0,.18)); }
+.avatar-canvas.avatar-mode .garment-fallback,
+.avatar-canvas.avatar-mode .bottom-fallback { display: none; }
+.garment-fields select { display: block; width: 100%; margin-top: 6px; height: 40px; border: 1px solid var(--line); background: #fff; padding: 0 9px; }
 
 .fit-controls { margin-top: 16px; padding: 15px; border: 1px solid var(--line); background: #f7f8f4; }
 .fit-controls-heading { display: flex; flex-direction: column; gap: 3px; margin-bottom: 13px; }

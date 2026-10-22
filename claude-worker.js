@@ -1,5 +1,5 @@
 const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
-const MAX_IMAGES = 3;
+const MAX_IMAGES = 2;
 const ALLOWED_MEDIA_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 function cors(request, env) {
@@ -56,8 +56,8 @@ export default {
 
     let body;
     try { body = await request.json(); } catch { return json({ error: "Payload tidak valid." }, 400, headers); }
-    const images = [body.personImage, body.topImage, body.bottomImage].map(dataUrlToImage);
-    if (images.length !== MAX_IMAGES || images.some((image) => !image)) return json({ error: "Gunakan tiga foto JPG, PNG, atau WEBP, maksimal 4 MB per foto." }, 400, headers);
+    const images = [body.topImage, body.bottomImage].map(dataUrlToImage);
+    if (images.length !== MAX_IMAGES || images.some((image) => !image)) return json({ error: "Gunakan foto baju dan bawahan berformat JPG, PNG, atau WEBP, maksimal 4 MB per foto." }, 400, headers);
 
     const measurements = body.measurements || {};
     const numericFields = ["height", "weight", "topLength", "topWidth", "bottomLength", "bottomWidth"];
@@ -66,7 +66,7 @@ export default {
     if (numericFields.some((key) => Number(measurements[key]) < ranges[key][0] || Number(measurements[key]) > ranges[key][1])) return json({ error: "Ada ukuran di luar rentang yang didukung." }, 400, headers);
     if (await rateLimited(request)) return json({ error: "Batas analisis sementara tercapai. Coba lagi sekitar 10 menit." }, 429, headers);
 
-    const prompt = `Kamu adalah asisten virtual try-on. Analisis foto tubuh, atasan, dan bawahan sebagai referensi visual saja; jangan mengidentifikasi orang atau menebak atribut sensitif. Data: tinggi ${measurements.height} cm, berat ${measurements.weight} kg, panjang/lebar atasan ${measurements.topLength}/${measurements.topWidth} cm, panjang/lebar bawahan ${measurements.bottomLength}/${measurements.bottomWidth} cm. Beri jawaban Bahasa Indonesia dengan: (1) kecocokan visual singkat, (2) catatan proporsi atasan dan bawahan, (3) keterbatasan akurasi. Jangan memberi jaminan ukuran.`;
+    const prompt = `Kamu adalah asisten virtual try-on. Analisis foto atasan dan bawahan sebagai referensi visual saja; jangan mengidentifikasi orang atau menebak atribut sensitif. Data: tinggi ${measurements.height} cm, berat ${measurements.weight} kg, panjang/lebar atasan ${measurements.topLength}/${measurements.topWidth} cm, panjang/lebar bawahan ${measurements.bottomLength}/${measurements.bottomWidth} cm. Beri jawaban Bahasa Indonesia dengan: (1) kecocokan visual singkat, (2) catatan proporsi atasan dan bawahan, (3) keterbatasan akurasi. Jangan memberi jaminan ukuran.`;
     const message = {
       model: env.CLAUDE_MODEL || "claude-haiku-5-5",
       max_tokens: 450,

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Forma — Virtual Try-On</title>
-    <meta name="theme-color" content="#17231f" />
+    <meta name="theme-color" content="#f7a9b8" />
     <meta name="description" content="Simulasi virtual try-on pribadi yang berjalan secara lokal." />
     <meta name="referrer" content="no-referrer" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://forma-ai-proxy.tyas1003.workers.dev; font-src 'self'; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests" />
@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="photo-editor.css" />
     <link rel="stylesheet" href="ai.css" />
     <link rel="stylesheet" href="fitting-editor.css" />
+    <link rel="stylesheet" href="theme.css?v=1" />
   </head>
   <body>
     <header class="site-header">
@@ -23,30 +24,38 @@
 
     <main id="top">
       <section class="hero">
-        <p class="eyebrow">Try it before you buy it</p>
-        <h1>Pakaian online,<br /><em>lebih terasa pas.</em></h1>
-        <p class="hero-copy">Buka di laptop atau HP: buat avatar proporsional dari foto dan data tubuhmu, lalu lihat simulasi baju <em>dan</em> celana sebelum checkout.</p>
-        <div class="hero-note"><span>01</span> Simulasi berjalan lokal. Foto hanya dikirim ke Claude jika kamu menekan analisis AI dan memberikan persetujuan.</div>
+        <div class="hero-card">
+          <p class="eyebrow">Virtual fitting room</p>
+          <h1>Find Your<br /><em>Perfect Fit.</em></h1>
+          <p class="hero-copy">Pilih pakaian, atur ukurannya, lalu lihat kombinasi baju dan bawahan pada boneka fitting sebelum checkout.</p>
+          <a class="hero-action" href="#tryon-form">Mulai fitting <span>→</span></a>
+          <span class="hero-sparkle" aria-hidden="true">✦</span>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="mini-mannequin"><i></i><b></b><span></span></div>
+          <p>YOUR SIZE<br />YOUR STYLE</p>
+        </div>
+        <div class="hero-note"><span>01</span> Lokal &amp; privat. Hanya foto pakaian yang dikirim saat kamu memilih analisis AI.</div>
       </section>
+
+      <nav class="feature-nav" aria-label="Fitur utama">
+        <a href="#tryon-form"><span>✦</span><strong>Try-on</strong><small>Coba outfit</small></a>
+        <a href="#wardrobe"><span>▦</span><strong>Lemari</strong><small>Simpan pakaian</small></a>
+        <a href="#looks"><span>♡</span><strong>Looks</strong><small>Outfit tersimpan</small></a>
+        <a href="#planner"><span>□</span><strong>Planner</strong><small>Rencana outfit</small></a>
+      </nav>
 
       <section class="workspace" aria-label="Virtual try-on workspace">
         <form id="tryon-form" novalidate>
           <div class="panel profile-panel">
-            <div class="panel-heading"><span class="step">01</span><div><h2>Profil kamu</h2><p>Unggah foto seluruh badan yang jelas.</p></div></div>
-            <label class="upload-zone" id="person-upload-zone" for="person-photo">
-              <input id="person-photo" type="file" accept="image/png,image/jpeg,image/webp" />
-              <div class="upload-placeholder" id="person-placeholder"><span class="upload-icon">↑</span><strong>Upload foto kamu</strong><small>JPG, PNG, atau WEBP · maks. 10 MB</small></div>
-              <img id="person-preview" alt="Pratinjau foto pengguna" />
-              <button class="edit-image" id="edit-person" type="button">Atur foto</button>
-              <button class="clear-image" id="clear-person" type="button" aria-label="Hapus foto">×</button>
-            </label>
-            <p class="photo-tip">Tip: Berdiri tegak menghadap kamera, tangan sedikit menjauh dari badan, dengan pencahayaan rata.</p>
-
-            <div class="fields two-col">
-              <label>Tinggi badan <span class="unit">cm</span><input id="height" inputmode="numeric" type="number" min="120" max="230" placeholder="contoh 165" required /></label>
-              <label>Berat badan <span class="unit">kg</span><input id="weight" inputmode="decimal" type="number" min="30" max="250" step="0.1" placeholder="contoh 58" required /></label>
+            <div class="panel-heading"><span class="step">01</span><div><h2>Boneka fitting</h2><p>FORMA memakai boneka standar—tanpa foto pribadi, tinggi, atau berat badan.</p></div></div>
+            <div hidden aria-hidden="true"><label id="person-upload-zone"><input id="person-photo" type="file" /><img id="person-preview" alt="" /><button id="clear-person" type="button"></button><button id="edit-person" type="button"></button></label></div>
+            <div hidden aria-hidden="true"><input id="height" type="number" value="165" /><input id="weight" type="number" value="55" /></div>
+            <div class="mannequin-intro">
+              <div class="mannequin-badge">✦</div>
+              <div><strong>Standar proporsional</strong><p>Gunakan kontrol ukuran dan posisi untuk menyesuaikan setiap pakaian pada boneka.</p></div>
             </div>
-            <div class="metrics" id="body-metrics" hidden>
+            <div class="metrics" id="body-metrics" hidden aria-hidden="true">
               <div><span>Estimasi BMI</span><strong id="bmi-value">—</strong></div>
               <div><span>Rentang torso*</span><strong id="torso-value">—</strong></div>
             </div>
@@ -69,16 +78,17 @@
           </div>
 
           <div class="panel garment-panel">
-            <div class="panel-heading"><span class="step">03</span><div><h2>Celana yang ingin dicoba</h2><p>Gunakan foto celana panjang atau rok dari tampak depan.</p></div></div>
+            <div class="panel-heading"><span class="step">03</span><div><h2>Bawahan yang ingin dicoba</h2><p>Gunakan foto celana panjang atau rok dari tampak depan.</p></div></div>
             <label class="upload-zone garment-zone" id="bottom-upload-zone" for="bottom-photo">
               <input id="bottom-photo" type="file" accept="image/png,image/jpeg,image/webp" />
-              <div class="upload-placeholder"><span class="upload-icon">↑</span><strong>Upload foto celana</strong><small>JPG, PNG, atau WEBP</small></div>
+              <div class="upload-placeholder"><span class="upload-icon">↑</span><strong>Upload foto bawahan</strong><small>JPG, PNG, atau WEBP</small></div>
               <img id="bottom-preview" alt="Pratinjau celana" />
               <button class="edit-image" id="edit-bottom" type="button">Atur foto</button>
               <button class="clear-image" id="clear-bottom" type="button" aria-label="Hapus foto celana">×</button>
             </label>
             <div class="fields garment-fields">
-              <label>Panjang celana <span class="unit">cm</span><input id="bottom-length" inputmode="decimal" type="number" min="25" max="150" step="0.5" placeholder="contoh 98" required /></label>
+              <label>Model bawahan<select id="bottom-kind"><option value="skirt" selected>Rok</option><option value="pants">Celana</option></select></label>
+              <label>Panjang bawahan <span class="unit">cm</span><input id="bottom-length" inputmode="decimal" type="number" min="25" max="150" step="0.5" placeholder="contoh 98" required /></label>
               <label>Lebar pinggang <span class="unit">cm</span><input id="bottom-width" inputmode="decimal" type="number" min="20" max="90" step="0.5" placeholder="contoh 36" required /></label>
             </div>
             <p class="measurement-note">Panjang diukur dari pinggang hingga ujung. Lebar pinggang dibentangkan rata dan dikonversi menjadi keliling ± 2× lebar.</p>
@@ -93,7 +103,6 @@
           <div class="fitting-stage empty" id="fitting-stage">
             <div class="stage-empty" id="stage-empty"><span>✦</span><h3>Avatar kamu akan muncul di sini</h3><p>Lengkapi profil dan pakaian untuk melihat estimasi proporsi &amp; fit.</p></div>
             <div class="avatar-canvas" id="avatar-canvas" aria-label="Simulasi avatar dan pakaian">
-              <img class="person-stage-photo" id="person-stage-photo" alt="Foto pengguna sebagai dasar fitting" />
               <div class="photo-silhouette" id="photo-silhouette"></div>
               <div class="avatar-body" id="avatar-body"><div class="avatar-head"></div><div class="avatar-neck"></div><div class="avatar-torso"></div><div class="avatar-arm arm-left"></div><div class="avatar-arm arm-right"></div><div class="avatar-leg leg-left"></div><div class="avatar-leg leg-right"></div></div>
               <div class="garment-overlay top-overlay" id="top-overlay"><img id="top-on-avatar" alt="Baju di avatar" /><div class="garment-fallback"></div></div>
@@ -115,17 +124,21 @@
             <div><span>Panjang celana vs kaki</span><strong id="bottom-length-result">—</strong></div>
           </div>
           <div class="fit-controls" id="fit-controls" hidden>
-            <div class="fit-controls-heading"><strong>Sesuaikan posisi pakaian</strong><small>Geser pakaian langsung pada foto atau gunakan pengaturan berikut.</small></div>
+            <div class="fit-controls-heading"><strong>Sesuaikan pakaian pada avatar</strong><small>Geser pakaian langsung pada avatar atau gunakan pengaturan berikut.</small></div>
             <label>Ukuran baju <input id="top-size-control" type="range" min="60" max="160" value="100" /></label>
             <label>Posisi baju <input id="top-y-control" type="range" min="-100" max="100" value="0" /></label>
             <label>Ukuran celana <input id="bottom-size-control" type="range" min="60" max="160" value="100" /></label>
             <label>Posisi celana <input id="bottom-y-control" type="range" min="-100" max="100" value="0" /></label>
           </div>
-          <p class="disclaimer">*Perhitungan awal menggunakan tinggi dan berat. Foto tunggal tidak bisa mengukur bentuk tubuh atau lingkar dada dengan akurasi klinis.</p>
+          <div class="look-actions" id="look-actions" hidden>
+            <button id="save-look" type="button">♡ Simpan look</button>
+            <button id="share-look" type="button">↗ Bagikan</button>
+          </div>
+          <p class="disclaimer">*Boneka merupakan alat visualisasi gaya, bukan representasi ukuran tubuh atau jaminan kecocokan pakaian.</p>
           <section class="ai-panel" aria-labelledby="ai-title">
             <div class="ai-heading"><span class="ai-mark">✦</span><div><p class="eyebrow">Claude vision</p><h3 id="ai-title">Analisis outfit dengan AI</h3></div></div>
             <p class="ai-copy">Claude memberi catatan visual tentang proporsi baju dan celana. Ini bukan hasil try-on fotorealistik atau jaminan ukuran.</p>
-            <label class="consent-field"><input id="ai-consent" type="checkbox" /> <span>Saya setuju tiga foto hasil crop dan ukuran dikirim melalui Cloudflare ke Anthropic untuk dianalisis.</span></label>
+            <label class="consent-field"><input id="ai-consent" type="checkbox" /> <span>Saya setuju foto baju, foto bawahan, dan ukuran dikirim melalui Cloudflare ke Anthropic untuk dianalisis.</span></label>
             <button class="ai-button" id="ai-analyze" type="button"><span>Analisis dengan Claude</span><span>↗</span></button>
             <p class="ai-status" id="ai-status" role="status" aria-live="polite"></p>
             <div class="ai-result" id="ai-result" hidden><div class="ai-result-title"><strong>Catatan Claude</strong><button id="ai-clear" type="button">Hapus</button></div><p id="ai-result-text"></p></div>
@@ -133,14 +146,76 @@
         </aside>
       </section>
 
+      <section class="closet-suite" aria-label="Lemari dan perencana outfit">
+        <div class="suite-heading">
+          <div><p class="eyebrow">Your digital closet</p><h2>Semua outfit, satu tempat.</h2></div>
+          <p>Pakaian, wishlist, looks, dan rencana outfit disimpan lokal di perangkat ini.</p>
+        </div>
+
+        <div class="suite-grid">
+          <article class="suite-card wardrobe-card" id="wardrobe">
+            <div class="suite-card-heading"><div><span>01</span><h3>Lemari digital</h3></div><strong id="wardrobe-count">0 item</strong></div>
+            <form id="wardrobe-form" class="mini-form">
+              <label>Nama item<input id="wardrobe-name" required maxlength="40" placeholder="Contoh: Kemeja linen" /></label>
+              <label>Kategori<select id="wardrobe-category"><option>Atasan</option><option>Bawahan</option><option>Dress</option><option>Outer</option><option>Sepatu</option><option>Aksesori</option></select></label>
+              <label>Warna<input id="wardrobe-color" maxlength="24" placeholder="Contoh: Merah" /></label>
+              <label>Tag<input id="wardrobe-tag" maxlength="24" placeholder="Kerja, kasual..." /></label>
+              <label class="wide">Catatan<input id="wardrobe-note" maxlength="80" placeholder="Bahan, ukuran, atau merek" /></label>
+              <label class="wide wishlist-check"><input id="wardrobe-wishlist" type="checkbox" /> Simpan sebagai wishlist</label>
+              <button class="suite-button" type="submit">+ Tambah ke lemari</button>
+            </form>
+            <div class="filter-row">
+              <button class="filter-chip active" type="button" data-filter="Semua">Semua</button>
+              <button class="filter-chip" type="button" data-filter="Atasan">Atasan</button>
+              <button class="filter-chip" type="button" data-filter="Bawahan">Bawahan</button>
+              <button class="filter-chip" type="button" data-filter="Wishlist">Wishlist</button>
+              <button class="filter-chip" type="button" data-filter="Arsip">Arsip</button>
+            </div>
+            <div class="local-list" id="wardrobe-list"><p class="empty-copy">Belum ada item. Tambahkan pakaian pertama kamu.</p></div>
+          </article>
+
+          <article class="suite-card" id="looks">
+            <div class="suite-card-heading"><div><span>02</span><h3>Looks tersimpan</h3></div><strong id="looks-count">0 look</strong></div>
+            <p class="suite-copy">Simpan kombinasi dari fitting room, beri rating, lalu pakai lagi untuk planner atau packing.</p>
+            <div class="local-list" id="looks-list"><p class="empty-copy">Look yang kamu simpan akan muncul di sini.</p></div>
+          </article>
+
+          <article class="suite-card" id="planner">
+            <div class="suite-card-heading"><div><span>03</span><h3>Outfit planner</h3></div><strong id="planner-count">0 rencana</strong></div>
+            <form id="planner-form" class="mini-form compact">
+              <label>Tanggal<input id="planner-date" type="date" required /></label>
+              <label>Acara<input id="planner-occasion" required maxlength="40" placeholder="Kantor, dinner..." /></label>
+              <label class="wide">Look<select id="planner-look"><option value="">Pilih look tersimpan</option></select></label>
+              <button class="suite-button" type="submit">Tambahkan rencana</button>
+            </form>
+            <div class="local-list" id="planner-list"><p class="empty-copy">Belum ada outfit yang dijadwalkan.</p></div>
+          </article>
+
+          <article class="suite-card stats-card">
+            <div class="suite-card-heading"><div><span>04</span><h3>Wardrobe insights</h3></div></div>
+            <div class="insight-grid">
+              <div><strong id="stat-items">0</strong><span>Item aktif</span></div>
+              <div><strong id="stat-wishlist">0</strong><span>Wishlist</span></div>
+              <div><strong id="stat-looks">0</strong><span>Looks</span></div>
+              <div><strong id="stat-plans">0</strong><span>Terjadwal</span></div>
+            </div>
+            <div class="packing-block">
+              <h4>Packing list</h4>
+              <div class="packing-row"><input id="packing-input" maxlength="40" placeholder="Tambah item perjalanan" /><button id="packing-add" type="button">+</button></div>
+              <div id="packing-list" class="packing-list"></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
       <section class="quick-start" aria-label="Cara memakai Forma">
         <p class="eyebrow">Cara pakai</p>
-        <div class="quick-start-grid"><div><span>1</span><strong>Masukkan profil</strong><p>Upload foto seluruh badan, tinggi, dan berat.</p></div><div><span>2</span><strong>Tambah outfit</strong><p>Upload baju dan celana beserta ukurannya.</p></div><div><span>3</span><strong>Lihat estimasi</strong><p>Bandingkan panjang serta lebar dengan avatar.</p></div></div>
+        <div class="quick-start-grid"><div><span>1</span><strong>Tambah outfit</strong><p>Upload baju dan bawahan beserta ukurannya.</p></div><div><span>2</span><strong>Atur pada boneka</strong><p>Geser dan skalakan setiap pakaian hingga proporsinya sesuai.</p></div><div><span>3</span><strong>Simpan look</strong><p>Simpan kombinasi ke lemari atau jadwalkan di planner.</p></div></div>
       </section>
 
       <section class="how-it-works">
         <p class="eyebrow">What this prototype does</p>
-        <div class="explain-grid"><article><span>01</span><h3>Avatar proporsional</h3><p>Rasio tinggi, berat, dan foto membentuk siluet non-kartun dengan kepala dan badan yang seimbang.</p></article><article><span>02</span><h3>Baju + celana</h3><p>Lebar dan panjang atasan serta bawahan dibandingkan terhadap torso, pinggang, dan panjang kaki.</p></article><article><span>03</span><h3>Privasi terkontrol</h3><p>Simulasi tetap lokal. Analisis Claude bersifat opsional dan hanya berjalan setelah persetujuan eksplisit.</p></article></div>
+        <div class="explain-grid"><article><span>01</span><h3>Boneka standar</h3><p>Boneka seimbang tanpa foto pribadi dan tanpa meminta tinggi atau berat badan.</p></article><article><span>02</span><h3>Baju + bawahan</h3><p>Lebar dan panjang atasan serta bawahan divisualkan sebagai panduan proporsi.</p></article><article><span>03</span><h3>Privasi terkontrol</h3><p>Simulasi tetap lokal. Analisis Claude bersifat opsional dan hanya berjalan setelah persetujuan eksplisit.</p></article></div>
       </section>
     </main>
     <dialog class="photo-editor" id="photo-editor" aria-labelledby="editor-title">
@@ -166,7 +241,8 @@
     <footer>FORMA <span>·</span> Local, private, and ready on web or mobile.</footer>
     <script src="photo-editor.js"></script>
     <script src="app.js"></script>
-    <script src="fitting-editor.js?v=1"></script>
-    <script src="ai.js?v=7"></script>
+    <script src="fitting-editor.js?v=2"></script>
+    <script src="ai.js?v=8"></script>
+    <script src="closet.js?v=1"></script>
   </body>
 </html>

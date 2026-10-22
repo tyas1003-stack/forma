@@ -1,7 +1,7 @@
 (() => {
+  images.person = 'avatar';
   const form = document.getElementById('tryon-form');
   const canvas = document.getElementById('avatar-canvas');
-  const person = document.getElementById('person-stage-photo');
   const controls = document.getElementById('fit-controls');
   const top = document.getElementById('top-overlay');
   const bottom = document.getElementById('bottom-overlay');
@@ -29,10 +29,14 @@
   form.addEventListener('submit', () => {
     requestAnimationFrame(() => {
       if (document.getElementById('fitting-stage').classList.contains('empty')) return;
-      const source = document.getElementById('person-preview').getAttribute('src');
-      if (!source) return;
-      person.src = source;
-      canvas.classList.add('photo-mode');
+      canvas.classList.add('avatar-mode');
+      const height = Number(document.getElementById('height').value);
+      const weight = Number(document.getElementById('weight').value);
+      const bmi = weight / ((height / 100) ** 2);
+      const bodyScale = Math.max(.86, Math.min(1.2, .86 + (bmi - 17) * .018));
+      document.getElementById('avatar-body').style.transform = `translateX(-50%) scaleX(${bodyScale})`;
+      bottom.classList.toggle('skirt', document.getElementById('bottom-kind').value === 'skirt');
+      bottom.classList.toggle('pants', document.getElementById('bottom-kind').value === 'pants');
       controls.hidden = false;
       state.top.baseWidth = parseFloat(getComputedStyle(top).width) || 132;
       state.top.baseHeight = parseFloat(getComputedStyle(top).height) || 163;
@@ -78,8 +82,8 @@
   enableDrag(top, 'top');
   enableDrag(bottom, 'bottom');
   document.getElementById('reset-all').addEventListener('click', () => {
-    canvas.classList.remove('photo-mode');
-    person.removeAttribute('src');
+    canvas.classList.remove('avatar-mode');
+    images.person = 'avatar';
     controls.hidden = true;
     resetControls();
   });

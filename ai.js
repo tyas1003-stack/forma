@@ -11,7 +11,7 @@
     const number = (id) => Number(document.getElementById(id).value);
     const image = (id) => document.getElementById(id).getAttribute('src') || null;
     return {
-      personImage: image('person-preview'),
+      personImage: null,
       topImage: image('top-preview'),
       bottomImage: image('bottom-preview'),
       measurements: {
@@ -36,7 +36,7 @@
   }
 
   function validate(data) {
-    if (!data.personImage || !data.topImage || !data.bottomImage) return 'Upload dan crop foto badan, baju, dan celana terlebih dahulu.';
+    if (!data.topImage || !data.bottomImage) return 'Upload dan crop foto baju serta bawahan terlebih dahulu.';
     if (Object.values(data.measurements).some((value) => !Number.isFinite(value) || value <= 0)) return 'Lengkapi tinggi, berat, dan seluruh ukuran pakaian.';
     if (!consent.checked) return 'Centang persetujuan pengiriman foto sebelum memakai Claude.';
     return '';
