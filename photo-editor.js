@@ -115,7 +115,6 @@
   function removeEdgeBackground(output) {
     const context = output.getContext('2d', { willReadFrequently: true });
     const frame = context.getImageData(0, 0, output.width, output.height);
-    const original = new Uint8ClampedArray(frame.data);
     const pixels = frame.data;
     const visited = new Uint8Array(output.width * output.height);
     const queue = [];
@@ -135,16 +134,18 @@
       if (y > 0) add(index - output.width);
       if (y + 1 < output.height) add(index + output.width);
     }
-    // A pale garment can touch the crop edge. Keep the source rather than
-    // erasing the product when the detected background becomes too large.
-    if (queue.length > output.width * output.height * .28) frame.data.set(original);
     context.putImageData(frame, 0, 0);
   }
   function maskFace(output) {
     const context = output.getContext('2d');
     context.globalCompositeOperation = 'destination-in';
     context.beginPath();
-    context.ellipse(output.width / 2, output.height * .47, output.width * .39, output.height * .45, 0, 0, Math.PI * 2);
+    context.moveTo(output.width * .5, output.height * .015);
+    context.bezierCurveTo(output.width * .75, output.height * .01, output.width * .91, output.height * .17, output.width * .92, output.height * .42);
+    context.bezierCurveTo(output.width * .91, output.height * .67, output.width * .73, output.height * .91, output.width * .5, output.height * .985);
+    context.bezierCurveTo(output.width * .27, output.height * .91, output.width * .09, output.height * .67, output.width * .08, output.height * .42);
+    context.bezierCurveTo(output.width * .09, output.height * .17, output.width * .25, output.height * .01, output.width * .5, output.height * .015);
+    context.closePath();
     context.fill();
     context.globalCompositeOperation = 'source-over';
   }

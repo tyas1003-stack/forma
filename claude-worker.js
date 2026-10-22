@@ -95,17 +95,26 @@ export default {
     const result = await response.json().catch(() => ({}));
     if (!response.ok) {
       const type = result?.error?.type || "";
+      const detail = String(result?.error?.message || "");
+      const normalizedDetail = detail.toLowerCase();
       if (response.status === 401 || type === "authentication_error") {
         return json({ error: "Kunci API Anthropic tidak valid. Perbarui ANTHROPIC_API_KEY di Cloudflare." }, 502, headers);
       }
-      if (response.status === 402 || type === "billing_error") {
+      if (response.status === 402 || type === "billing_error" || normalizedDetail.includes("credit balance") || normalizedDetail.includes("billing")) {
         return json({ error: "Kredit API Anthropic tidak mencukupi. Periksa billing di Anthropic Console." }, 502, headers);
       }
       if (response.status === 429 || type === "rate_limit_error") {
         return json({ error: "Anthropic sedang membatasi permintaan. Coba lagi beberapa menit." }, 429, headers);
       }
+      if (normalizedDetail.includes("image")) {
+        return json({ error: "Claude menolak salah satu gambar. Upload ulang foto JPG/PNG yang jelas lalu coba lagi." }, 400, headers);
+      }
+      if (normalizedDetail.includes("model")) {
+        return json({ error: "Model Claude belum tersedia untuk API key ini. Periksa akses model di Anthropic Console." }, 400, headers);
+      }
       if (response.status === 400 || type === "invalid_request_error") {
-        return json({ error: "Claude menolak format gambar atau model. Crop ulang foto lalu coba lagi." }, 400, headers);
+        const safeDetail = detail.replace(/[\r\n]+/g, " ").slice(0, 180);
+        return json({ error: safeDetail ? `Anthropic menolak permintaan: ${safeDetail}` : "Anthropic menolak permintaan. Periksa pengaturan API Anthropic." }, 400, headers);
       }
       return json({ error: "Layanan Claude sedang bermasalah. Coba lagi beberapa saat." }, 502, headers);
     }
