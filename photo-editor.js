@@ -6,7 +6,7 @@
   const zoomInput = document.getElementById('crop-zoom');
   const sizeInput = document.getElementById('crop-size');
   const pointers = new Map();
-  const ratios = { person: 3 / 4, top: 4 / 5, bottom: 3 / 4 };
+  const ratios = { person: 1, top: 4 / 5, bottom: 3 / 4 };
   const state = { key: null, image: null, zoom: 1, rotation: 0, x: 0, y: 0, onSave: null, hadImage: false, lastDistance: 0 };
 
   function loadImage(source) {
@@ -49,8 +49,10 @@
     target.save();
     target.setTransform(dpr, 0, 0, dpr, 0, 0);
     target.clearRect(0, 0, logicalWidth, logicalHeight);
-    target.fillStyle = '#eef0ea';
-    target.fillRect(0, 0, logicalWidth, logicalHeight);
+    if (!forExport) {
+      target.fillStyle = '#eef0ea';
+      target.fillRect(0, 0, logicalWidth, logicalHeight);
+    }
     target.translate(logicalWidth / 2 + transform.offsetX, logicalHeight / 2 + transform.offsetY);
     target.rotate(state.rotation * Math.PI / 180);
     target.scale(transform.scale, transform.scale);
@@ -79,6 +81,9 @@
       state.onSave = onSave;
       state.hadImage = typeof source === 'string';
       zoomInput.value = '1';
+      document.getElementById('editor-help').textContent = key === 'person'
+        ? 'Posisikan wajah memenuhi oval: dari dahi sampai dagu. Leher dan background akan dipotong.'
+        : 'Geser foto di dalam bingkai. Gunakan zoom agar objek memenuhi area.';
       dialog.showModal();
       requestAnimationFrame(resizeCanvas);
     } catch (error) {
@@ -107,6 +112,38 @@
   canvas.addEventListener('pointercancel', endPointer);
   zoomInput.addEventListener('input', () => { state.zoom = Number(zoomInput.value); draw(); });
   document.getElementById('crop-rotate').addEventListener('click', () => { state.rotation = (state.rotation + 90) % 360; state.x = 0; state.y = 0; resizeCanvas(); });
+  function removeEdgeBackground(output) {
+    const context = output.getContext('2d', { willReadFrequently: true });
+    const frame = context.getImageData(0, 0, output.width, output.height);
+    const pixels = frame.data;
+    const visited = new Uint8Array(output.width * output.height);
+    const queue = [];
+    const isBackground = (index) => {
+      const offset = index * 4;
+      const r = pixels[offset], g = pixels[offset + 1], b = pixels[offset + 2], a = pixels[offset + 3];
+      return a < 12 || (r > 218 && g > 218 && b > 218 && Math.max(r,g,b) - Math.min(r,g,b) < 34);
+    };
+    const add = (index) => { if (!visited[index] && isBackground(index)) { visited[index] = 1; queue.push(index); } };
+    for (let x = 0; x < output.width; x += 2) { add(x); add((output.height - 1) * output.width + x); }
+    for (let y = 0; y < output.height; y += 2) { add(y * output.width); add(y * output.width + output.width - 1); }
+    for (let cursor = 0; cursor < queue.length; cursor++) {
+      const index = queue[cursor], x = index % output.width, y = Math.floor(index / output.width);
+      pixels[index * 4 + 3] = 0;
+      if (x > 0) add(index - 1);
+      if (x + 1 < output.width) add(index + 1);
+      if (y > 0) add(index - output.width);
+      if (y + 1 < output.height) add(index + output.width);
+    }
+    context.putImageData(frame, 0, 0);
+  }
+  function maskFace(output) {
+    const context = output.getContext('2d');
+    context.globalCompositeOperation = 'destination-in';
+    context.beginPath();
+    context.ellipse(output.width / 2, output.height * .47, output.width * .39, output.height * .45, 0, 0, Math.PI * 2);
+    context.fill();
+    context.globalCompositeOperation = 'source-over';
+  }
   document.getElementById('crop-save').addEventListener('click', () => {
     const widths = { small: 720, standard: 1080, large: 1600 };
     const width = widths[sizeInput.value] || 1080;
@@ -115,7 +152,9 @@
     output.width = width;
     output.height = height;
     draw(output.getContext('2d'), width, height, true);
-    state.onSave(output.toDataURL('image/webp', .9));
+    if (state.key === 'top' || state.key === 'bottom') removeEdgeBackground(output);
+    if (state.key === 'person') maskFace(output);
+    state.onSave(output.toDataURL('image/png'));
     state.hadImage = true;
     dialog.close('saved');
   });

@@ -19,6 +19,31 @@
     element.style.marginTop = `${item.y}px`;
   }
 
+  function clamp(min, max, value) { return Math.max(min, Math.min(max, value)); }
+
+  function syncMeasurements() {
+    if (document.getElementById('fitting-stage').classList.contains('empty')) return;
+    const height = Number(document.getElementById('height').value) || 165;
+    const torso = height * .285;
+    const inseam = height * .455;
+    const chestHalf = clamp(36, 66, (.65 * height + .56 * 55 - 50) / 2);
+    const waistHalf = clamp(29, 62, (.48 * height + .48 * 55 - 38) / 2);
+    const topLength = Number(document.getElementById('top-length').value);
+    const topWidth = Number(document.getElementById('top-width').value);
+    const bottomLength = Number(document.getElementById('bottom-length').value);
+    const bottomWidth = Number(document.getElementById('bottom-width').value);
+    if (topLength > 0) state.top.baseHeight = 163 * clamp(.68, 1.35, topLength / torso);
+    if (topWidth > 0) state.top.baseWidth = 132 * clamp(.75, 1.35, topWidth / chestHalf);
+    if (bottomLength > 0) state.bottom.baseHeight = 180 * clamp(.65, 1.28, bottomLength / inseam);
+    if (bottomWidth > 0) state.bottom.baseWidth = 105 * clamp(.75, 1.4, bottomWidth / waistHalf);
+    const avatarScale = clamp(.82, 1.15, height / 165);
+    document.getElementById('avatar-body').style.transform = `translateX(-50%) scale(${avatarScale})`;
+    bottom.classList.toggle('skirt', document.getElementById('bottom-kind').value === 'skirt');
+    bottom.classList.toggle('pants', document.getElementById('bottom-kind').value === 'pants');
+    apply('top');
+    apply('bottom');
+  }
+
   function resetControls() {
     ['top-size-control', 'bottom-size-control'].forEach((id) => { document.getElementById(id).value = '100'; });
     ['top-y-control', 'bottom-y-control'].forEach((id) => { document.getElementById(id).value = '0'; });
@@ -31,10 +56,12 @@
       if (document.getElementById('fitting-stage').classList.contains('empty')) return;
       canvas.classList.add('avatar-mode');
       const height = Number(document.getElementById('height').value);
-      const weight = Number(document.getElementById('weight').value);
-      const bmi = weight / ((height / 100) ** 2);
-      const bodyScale = Math.max(.86, Math.min(1.2, .86 + (bmi - 17) * .018));
-      document.getElementById('avatar-body').style.transform = `translateX(-50%) scaleX(${bodyScale})`;
+      const avatarScale = clamp(.82, 1.15, height / 165);
+      document.getElementById('avatar-body').style.transform = `translateX(-50%) scale(${avatarScale})`;
+      const face = document.getElementById('person-preview').getAttribute('src');
+      const head = document.querySelector('.avatar-head');
+      head.style.backgroundImage = face ? `url("${face}")` : '';
+      head.classList.toggle('has-face', Boolean(face));
       bottom.classList.toggle('skirt', document.getElementById('bottom-kind').value === 'skirt');
       bottom.classList.toggle('pants', document.getElementById('bottom-kind').value === 'pants');
       controls.hidden = false;
@@ -52,6 +79,14 @@
   document.getElementById('bottom-size-control').addEventListener('input', (event) => { state.bottom.scale = Number(event.target.value) / 100; apply('bottom'); });
   document.getElementById('top-y-control').addEventListener('input', (event) => { state.top.y = Number(event.target.value); apply('top'); });
   document.getElementById('bottom-y-control').addEventListener('input', (event) => { state.bottom.y = Number(event.target.value); apply('bottom'); });
+  ['height', 'top-length', 'top-width', 'bottom-length', 'bottom-width'].forEach((id) => document.getElementById(id).addEventListener('input', syncMeasurements));
+  document.getElementById('bottom-kind').addEventListener('change', syncMeasurements);
+  document.getElementById('clear-person').addEventListener('click', () => {
+    images.person = 'avatar';
+    const head = document.querySelector('.avatar-head');
+    head.style.backgroundImage = '';
+    head.classList.remove('has-face');
+  });
 
   function enableDrag(element, kind) {
     let pointer = null;

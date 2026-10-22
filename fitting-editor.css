@@ -1,7 +1,8 @@
 .avatar-canvas.avatar-mode .photo-silhouette { display: none !important; }
 .avatar-canvas.avatar-mode .avatar-body { display: block; z-index: 2; }
 .avatar-canvas.avatar-mode .avatar-head { background:#ce9370; box-shadow:inset 0 0 0 2px rgba(255,255,255,.35); }
-.avatar-canvas.avatar-mode .scale-line { z-index: 5; }
+.avatar-canvas.avatar-mode .avatar-head.has-face { background-color:#ce9370; background-position:center 42%; background-size:cover; background-repeat:no-repeat; box-shadow:inset 0 0 0 2px rgba(255,255,255,.55); overflow:hidden; }
+.avatar-canvas.avatar-mode .scale-line { display: none; }
 .avatar-canvas.avatar-mode .garment-overlay,
 .avatar-canvas.avatar-mode .bottom-overlay { z-index: 4; cursor: grab; touch-action: none; }
 .avatar-canvas.avatar-mode .garment-overlay { clip-path: polygon(18% 0, 35% 0, 42% 6%, 58% 6%, 65% 0, 82% 0, 100% 19%, 82% 35%, 78% 100%, 22% 100%, 18% 35%, 0 19%); }

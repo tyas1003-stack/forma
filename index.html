@@ -27,7 +27,7 @@
         <div class="hero-card">
           <p class="eyebrow">Virtual fitting room</p>
           <h1>Find Your<br /><em>Perfect Fit.</em></h1>
-          <p class="hero-copy">Pilih pakaian, atur ukurannya, lalu lihat kombinasi baju dan bawahan pada boneka fitting sebelum checkout.</p>
+          <p class="hero-copy">Masukkan tinggi untuk membuat avatar, lalu atur pakaian dan lihat kombinasi baju serta bawahan sebelum checkout.</p>
           <a class="hero-action" href="#tryon-form">Mulai fitting <span>→</span></a>
           <span class="hero-sparkle" aria-hidden="true">✦</span>
         </div>
@@ -48,12 +48,21 @@
       <section class="workspace" aria-label="Virtual try-on workspace">
         <form id="tryon-form" novalidate>
           <div class="panel profile-panel">
-            <div class="panel-heading"><span class="step">01</span><div><h2>Boneka fitting</h2><p>FORMA memakai boneka standar—tanpa foto pribadi, tinggi, atau berat badan.</p></div></div>
-            <div hidden aria-hidden="true"><label id="person-upload-zone"><input id="person-photo" type="file" /><img id="person-preview" alt="" /><button id="clear-person" type="button"></button><button id="edit-person" type="button"></button></label></div>
-            <div hidden aria-hidden="true"><input id="height" type="number" value="165" /><input id="weight" type="number" value="55" /></div>
+            <div class="panel-heading"><span class="step">01</span><div><h2>Buat avatar</h2><p>Masukkan tinggi badan. Foto wajah opsional; tanpa foto, wajah default akan digunakan.</p></div></div>
+            <label class="face-upload" id="person-upload-zone" for="person-photo">
+              <input id="person-photo" type="file" accept="image/png,image/jpeg,image/webp" />
+              <div class="face-placeholder"><span>＋</span><div><strong>Tambah foto wajah <em>opsional</em></strong><small>Hanya wajah yang dipakai; tanpa background dan leher.</small></div></div>
+              <img id="person-preview" alt="Pratinjau wajah" />
+              <button class="edit-image" id="edit-person" type="button">Atur wajah</button>
+              <button class="clear-image" id="clear-person" type="button" aria-label="Gunakan wajah avatar default">×</button>
+            </label>
+            <div hidden aria-hidden="true"><input id="weight" type="number" value="55" /></div>
+            <div class="fields avatar-height-field">
+              <label>Tinggi badan <span class="unit">cm</span><input id="height" inputmode="numeric" type="number" min="120" max="230" placeholder="contoh 165" required /></label>
+            </div>
             <div class="mannequin-intro">
               <div class="mannequin-badge">✦</div>
-              <div><strong>Standar proporsional</strong><p>Gunakan kontrol ukuran dan posisi untuk menyesuaikan setiap pakaian pada boneka.</p></div>
+              <div><strong>Avatar proporsional</strong><p>Tinggi badan mengatur skala avatar. Pakaian ikut disesuaikan terhadap panjang tubuh.</p></div>
             </div>
             <div class="metrics" id="body-metrics" hidden aria-hidden="true">
               <div><span>Estimasi BMI</span><strong id="bmi-value">—</strong></div>
@@ -134,7 +143,7 @@
             <button id="save-look" type="button">♡ Simpan look</button>
             <button id="share-look" type="button">↗ Bagikan</button>
           </div>
-          <p class="disclaimer">*Boneka merupakan alat visualisasi gaya, bukan representasi ukuran tubuh atau jaminan kecocokan pakaian.</p>
+          <p class="disclaimer">*Avatar merupakan alat visualisasi gaya berdasarkan tinggi badan, bukan jaminan kecocokan pakaian.</p>
           <section class="ai-panel" aria-labelledby="ai-title">
             <div class="ai-heading"><span class="ai-mark">✦</span><div><p class="eyebrow">Claude vision</p><h3 id="ai-title">Analisis outfit dengan AI</h3></div></div>
             <p class="ai-copy">Claude memberi catatan visual tentang proporsi baju dan celana. Ini bukan hasil try-on fotorealistik atau jaminan ukuran.</p>
@@ -210,12 +219,12 @@
 
       <section class="quick-start" aria-label="Cara memakai Forma">
         <p class="eyebrow">Cara pakai</p>
-        <div class="quick-start-grid"><div><span>1</span><strong>Tambah outfit</strong><p>Upload baju dan bawahan beserta ukurannya.</p></div><div><span>2</span><strong>Atur pada boneka</strong><p>Geser dan skalakan setiap pakaian hingga proporsinya sesuai.</p></div><div><span>3</span><strong>Simpan look</strong><p>Simpan kombinasi ke lemari atau jadwalkan di planner.</p></div></div>
+        <div class="quick-start-grid"><div><span>1</span><strong>Buat avatar</strong><p>Masukkan tinggi badan untuk menentukan skala avatar.</p></div><div><span>2</span><strong>Tambah outfit</strong><p>Upload baju dan bawahan; ukurannya langsung mengubah tampilan.</p></div><div><span>3</span><strong>Simpan look</strong><p>Simpan kombinasi ke lemari atau jadwalkan di planner.</p></div></div>
       </section>
 
       <section class="how-it-works">
         <p class="eyebrow">What this prototype does</p>
-        <div class="explain-grid"><article><span>01</span><h3>Boneka standar</h3><p>Boneka seimbang tanpa foto pribadi dan tanpa meminta tinggi atau berat badan.</p></article><article><span>02</span><h3>Baju + bawahan</h3><p>Lebar dan panjang atasan serta bawahan divisualkan sebagai panduan proporsi.</p></article><article><span>03</span><h3>Privasi terkontrol</h3><p>Simulasi tetap lokal. Analisis Claude bersifat opsional dan hanya berjalan setelah persetujuan eksplisit.</p></article></div>
+        <div class="explain-grid"><article><span>01</span><h3>Avatar proporsional</h3><p>Tinggi badan mengatur skala avatar tanpa membutuhkan foto pribadi atau berat badan.</p></article><article><span>02</span><h3>Baju + bawahan</h3><p>Lebar dan panjang atasan serta bawahan divisualkan sebagai panduan proporsi.</p></article><article><span>03</span><h3>Privasi terkontrol</h3><p>Simulasi tetap lokal. Analisis Claude bersifat opsional dan hanya berjalan setelah persetujuan eksplisit.</p></article></div>
       </section>
     </main>
     <dialog class="photo-editor" id="photo-editor" aria-labelledby="editor-title">
@@ -224,7 +233,7 @@
           <div><p class="eyebrow">Image sizing</p><h2 id="editor-title">Atur foto</h2></div>
           <button class="editor-close" value="cancel" aria-label="Tutup editor" type="submit">×</button>
         </div>
-        <p class="editor-help">Geser foto di dalam bingkai. Gunakan zoom agar objek memenuhi area.</p>
+        <p class="editor-help" id="editor-help">Geser foto di dalam bingkai. Gunakan zoom agar objek memenuhi area.</p>
         <div class="crop-stage" id="crop-stage"><canvas id="crop-canvas" aria-label="Area crop foto"></canvas></div>
         <div class="editor-controls">
           <label>Zoom <input id="crop-zoom" type="range" min="1" max="3" step="0.01" value="1" /></label>
@@ -239,9 +248,9 @@
       </form>
     </dialog>
     <footer>FORMA <span>·</span> Local, private, and ready on web or mobile.</footer>
-    <script src="photo-editor.js"></script>
+    <script src="photo-editor.js?v=3"></script>
     <script src="app.js"></script>
-    <script src="fitting-editor.js?v=2"></script>
+    <script src="fitting-editor.js?v=4"></script>
     <script src="ai.js?v=8"></script>
     <script src="closet.js?v=1"></script>
   </body>
