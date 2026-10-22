@@ -8,6 +8,24 @@
   const resultText = document.getElementById('ai-result-text');
   let controller = null;
 
+  function getTryOnData() {
+    const number = (id) => Number(document.getElementById(id).value);
+    const image = (id) => document.getElementById(id).getAttribute('src') || null;
+    return {
+      personImage: image('person-preview'),
+      topImage: image('top-preview'),
+      bottomImage: image('bottom-preview'),
+      measurements: {
+        height: number('height'),
+        weight: number('weight'),
+        topLength: number('top-length'),
+        topWidth: number('top-width'),
+        bottomLength: number('bottom-length'),
+        bottomWidth: number('bottom-width'),
+      },
+    };
+  }
+
   function clearAnalysis() {
     if (controller) controller.abort();
     controller = null;
@@ -28,7 +46,7 @@
   }
 
   button.addEventListener('click', async () => {
-    const data = window.formaGetTryOnData();
+    const data = getTryOnData();
     const error = validate(data);
     if (error) { status.textContent = error; return; }
 
