@@ -1,6 +1,5 @@
 (() => {
   const endpoint = 'https://forma-ai-proxy.tyas1003.workers.dev';
-  const access = document.getElementById('ai-access');
   const consent = document.getElementById('ai-consent');
   const button = document.getElementById('ai-analyze');
   const status = document.getElementById('ai-status');
@@ -29,7 +28,6 @@
   function clearAnalysis() {
     if (controller) controller.abort();
     controller = null;
-    access.value = '';
     consent.checked = false;
     status.textContent = '';
     result.hidden = true;
@@ -40,7 +38,6 @@
   function validate(data) {
     if (!data.personImage || !data.topImage || !data.bottomImage) return 'Upload dan crop foto badan, baju, dan celana terlebih dahulu.';
     if (Object.values(data.measurements).some((value) => !Number.isFinite(value) || value <= 0)) return 'Lengkapi tinggi, berat, dan seluruh ukuran pakaian.';
-    if (!access.value.trim()) return 'Masukkan kode akses privat.';
     if (!consent.checked) return 'Centang persetujuan pengiriman foto sebelum memakai Claude.';
     return '';
   }
@@ -59,13 +56,13 @@
     try {
       const response = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${access.value.trim()}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
         signal: controller.signal,
       });
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) {
-        if (response.status === 401) throw new Error('Kode akses tidak cocok. Periksa ACCESS_TOKEN di Cloudflare.');
+        if (response.status === 429) throw new Error('Batas analisis sementara tercapai. Coba lagi sekitar 10 menit.');
         throw new Error(payload.error || 'Claude belum dapat memproses permintaan.');
       }
       resultText.textContent = payload.analysis || 'Claude tidak mengembalikan catatan.';
@@ -82,5 +79,5 @@
   });
 
   document.getElementById('ai-clear').addEventListener('click', clearAnalysis);
-  window.addEventListener('pagehide', () => { if (controller) controller.abort(); access.value = ''; });
+  window.addEventListener('pagehide', () => { if (controller) controller.abort(); });
 })();

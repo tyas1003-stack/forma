@@ -33,15 +33,25 @@ function extractText(payload) {
   return payload.content?.filter((item) => item.type === "text").map((item) => item.text).join("\n") || "";
 }
 
+async function rateLimited(request) {
+  const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ip));
+  const key = [...new Uint8Array(digest)].slice(0, 12).map((byte) => byte.toString(16).padStart(2, "0")).join("");
+  const cache = caches.default;
+  const cacheKey = new Request(`https://forma-rate-limit.invalid/${key}`);
+  const existing = await cache.match(cacheKey);
+  const count = existing ? Number(await existing.text()) : 0;
+  if (count >= 5) return true;
+  await cache.put(cacheKey, new Response(String(count + 1), { headers: { "Cache-Control": "max-age=600" } }));
+  return false;
+}
+
 export default {
   async fetch(request, env) {
     const headers = cors(request, env);
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers });
     if (request.method !== "POST") return json({ error: "Method not allowed." }, 405, headers);
     if (request.headers.get("Origin") !== env.ALLOWED_ORIGIN) return json({ error: "Origin tidak diizinkan." }, 403, headers);
-    // Keep paid API calls disabled until server-side access protection is configured.
-    // CORS alone does not authenticate callers or prevent API credit abuse.
-    if (!env.ACCESS_TOKEN || request.headers.get("Authorization") !== `Bearer ${env.ACCESS_TOKEN}`) return json({ error: "Akses AI memerlukan autentikasi." }, 401, headers);
     if (!env.ANTHROPIC_API_KEY) return json({ error: "AI belum dikonfigurasi." }, 503, headers);
 
     let body;
@@ -54,6 +64,7 @@ export default {
     if (numericFields.some((key) => !Number.isFinite(Number(measurements[key])))) return json({ error: "Ukuran tubuh atau pakaian belum lengkap." }, 400, headers);
     const ranges = { height: [120, 230], weight: [30, 250], topLength: [20, 180], topWidth: [20, 120], bottomLength: [25, 150], bottomWidth: [20, 90] };
     if (numericFields.some((key) => Number(measurements[key]) < ranges[key][0] || Number(measurements[key]) > ranges[key][1])) return json({ error: "Ada ukuran di luar rentang yang didukung." }, 400, headers);
+    if (await rateLimited(request)) return json({ error: "Batas analisis sementara tercapai. Coba lagi sekitar 10 menit." }, 429, headers);
 
     const prompt = `Kamu adalah asisten virtual try-on. Analisis foto tubuh, atasan, dan bawahan sebagai referensi visual saja; jangan mengidentifikasi orang atau menebak atribut sensitif. Data: tinggi ${measurements.height} cm, berat ${measurements.weight} kg, panjang/lebar atasan ${measurements.topLength}/${measurements.topWidth} cm, panjang/lebar bawahan ${measurements.bottomLength}/${measurements.bottomWidth} cm. Beri jawaban Bahasa Indonesia dengan: (1) kecocokan visual singkat, (2) catatan proporsi atasan dan bawahan, (3) keterbatasan akurasi. Jangan memberi jaminan ukuran.`;
     const message = {

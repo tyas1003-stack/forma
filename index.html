@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="photo-editor.css" />
     <link rel="stylesheet" href="ai.css" />
+    <link rel="stylesheet" href="fitting-editor.css" />
   </head>
   <body>
     <header class="site-header">
@@ -92,6 +93,7 @@
           <div class="fitting-stage empty" id="fitting-stage">
             <div class="stage-empty" id="stage-empty"><span>✦</span><h3>Avatar kamu akan muncul di sini</h3><p>Lengkapi profil dan pakaian untuk melihat estimasi proporsi &amp; fit.</p></div>
             <div class="avatar-canvas" id="avatar-canvas" aria-label="Simulasi avatar dan pakaian">
+              <img class="person-stage-photo" id="person-stage-photo" alt="Foto pengguna sebagai dasar fitting" />
               <div class="photo-silhouette" id="photo-silhouette"></div>
               <div class="avatar-body" id="avatar-body"><div class="avatar-head"></div><div class="avatar-neck"></div><div class="avatar-torso"></div><div class="avatar-arm arm-left"></div><div class="avatar-arm arm-right"></div><div class="avatar-leg leg-left"></div><div class="avatar-leg leg-right"></div></div>
               <div class="garment-overlay top-overlay" id="top-overlay"><img id="top-on-avatar" alt="Baju di avatar" /><div class="garment-fallback"></div></div>
@@ -112,11 +114,17 @@
             <div><span>Panjang baju vs torso</span><strong id="top-length-result">—</strong></div>
             <div><span>Panjang celana vs kaki</span><strong id="bottom-length-result">—</strong></div>
           </div>
+          <div class="fit-controls" id="fit-controls" hidden>
+            <div class="fit-controls-heading"><strong>Sesuaikan posisi pakaian</strong><small>Geser pakaian langsung pada foto atau gunakan pengaturan berikut.</small></div>
+            <label>Ukuran baju <input id="top-size-control" type="range" min="60" max="160" value="100" /></label>
+            <label>Posisi baju <input id="top-y-control" type="range" min="-100" max="100" value="0" /></label>
+            <label>Ukuran celana <input id="bottom-size-control" type="range" min="60" max="160" value="100" /></label>
+            <label>Posisi celana <input id="bottom-y-control" type="range" min="-100" max="100" value="0" /></label>
+          </div>
           <p class="disclaimer">*Perhitungan awal menggunakan tinggi dan berat. Foto tunggal tidak bisa mengukur bentuk tubuh atau lingkar dada dengan akurasi klinis.</p>
           <section class="ai-panel" aria-labelledby="ai-title">
             <div class="ai-heading"><span class="ai-mark">✦</span><div><p class="eyebrow">Claude vision</p><h3 id="ai-title">Analisis outfit dengan AI</h3></div></div>
             <p class="ai-copy">Claude memberi catatan visual tentang proporsi baju dan celana. Ini bukan hasil try-on fotorealistik atau jaminan ukuran.</p>
-            <label class="token-field">Kode akses privat<input id="ai-access" type="password" autocomplete="off" spellcheck="false" placeholder="Masukkan ACCESS_TOKEN" /></label>
             <label class="consent-field"><input id="ai-consent" type="checkbox" /> <span>Saya setuju tiga foto hasil crop dan ukuran dikirim melalui Cloudflare ke Anthropic untuk dianalisis.</span></label>
             <button class="ai-button" id="ai-analyze" type="button"><span>Analisis dengan Claude</span><span>↗</span></button>
             <p class="ai-status" id="ai-status" role="status" aria-live="polite"></p>
@@ -158,6 +166,7 @@
     <footer>FORMA <span>·</span> Local, private, and ready on web or mobile.</footer>
     <script src="photo-editor.js"></script>
     <script src="app.js"></script>
-    <script src="ai.js?v=5"></script>
+    <script src="fitting-editor.js?v=1"></script>
+    <script src="ai.js?v=7"></script>
   </body>
 </html>
