@@ -1,0 +1,66 @@
+.edit-image {
+  display: none;
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  z-index: 4;
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: rgba(23, 35, 31, 0.92);
+  color: #fff;
+  font: 600 11px var(--sans);
+}
+
+.upload-zone.has-image .edit-image { display: block; }
+
+.photo-editor {
+  width: min(92vw, 650px);
+  max-height: 94vh;
+  border: 0;
+  border-radius: 12px;
+  padding: 0;
+  background: var(--cream);
+  color: var(--ink);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+}
+
+.photo-editor::backdrop {
+  background: rgba(14, 22, 19, 0.72);
+  backdrop-filter: blur(4px);
+}
+
+.editor-shell { padding: 24px; }
+.editor-heading { display: flex; justify-content: space-between; align-items: flex-start; }
+.editor-heading h2 { margin: 0; font: 600 25px var(--serif); }
+.editor-close { width: 42px; height: 42px; border: 0; border-radius: 50%; background: #e8ebe5; font-size: 25px; }
+.editor-help { margin: 8px 0 14px; color: var(--muted); font-size: 12px; }
+.crop-stage { height: min(55vh, 500px); display: grid; place-items: center; overflow: hidden; border-radius: 4px; background: #dfe3dc; touch-action: none; }
+.crop-stage canvas { display: block; max-width: 100%; max-height: 100%; touch-action: none; cursor: grab; }
+.crop-stage canvas:active { cursor: grabbing; }
+.editor-controls { display: grid; grid-template-columns: 1.4fr 0.8fr; gap: 18px; margin: 17px 0; }
+.editor-controls label { font-size: 12px; font-weight: 600; }
+.editor-controls input, .editor-controls select { display: block; width: 100%; margin-top: 8px; }
+.editor-controls select { height: 40px; border: 1px solid var(--line); background: #fff; padding: 0 9px; }
+.editor-actions { display: grid; grid-template-columns: auto 1fr; gap: 10px; }
+.secondary-button { min-height: 48px; border: 1px solid var(--line); background: #fff; color: var(--ink); padding: 0 18px; font-weight: 600; }
+.editor-save { height: 50px; }
+.photo-editor[open] { animation: editor-in 0.18s ease-out; }
+
+@keyframes editor-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (max-width: 800px) {
+  .result-panel { order: initial; }
+}
+
+@media (max-width: 520px) {
+  .photo-editor { width: 100vw; max-width: none; max-height: 96vh; margin: auto 0 0; border-radius: 16px 16px 0 0; }
+  .editor-shell { padding: 16px; }
+  .crop-stage { height: 50vh; }
+  .editor-controls { grid-template-columns: 1fr; gap: 10px; }
+  .editor-actions { grid-template-columns: 1fr; }
+  .secondary-button { height: 46px; }
+}

@@ -10,6 +10,7 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'none'; font-src 'self'; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests" />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="photo-editor.css" />
   </head>
   <body>
     <header class="site-header">
@@ -34,6 +35,7 @@
               <input id="person-photo" type="file" accept="image/png,image/jpeg,image/webp" />
               <div class="upload-placeholder" id="person-placeholder"><span class="upload-icon">↑</span><strong>Upload foto kamu</strong><small>JPG, PNG, atau WEBP · maks. 10 MB</small></div>
               <img id="person-preview" alt="Pratinjau foto pengguna" />
+              <button class="edit-image" id="edit-person" type="button">Atur foto</button>
               <button class="clear-image" id="clear-person" type="button" aria-label="Hapus foto">×</button>
             </label>
             <p class="photo-tip">Tip: Berdiri tegak menghadap kamera, tangan sedikit menjauh dari badan, dengan pencahayaan rata.</p>
@@ -54,6 +56,7 @@
               <input id="top-photo" type="file" accept="image/png,image/jpeg,image/webp" />
               <div class="upload-placeholder"><span class="upload-icon">↑</span><strong>Upload foto baju</strong><small>JPG, PNG, atau WEBP</small></div>
               <img id="top-preview" alt="Pratinjau baju" />
+              <button class="edit-image" id="edit-top" type="button">Atur foto</button>
               <button class="clear-image" id="clear-top" type="button" aria-label="Hapus foto baju">×</button>
             </label>
             <div class="fields garment-fields">
@@ -69,6 +72,7 @@
               <input id="bottom-photo" type="file" accept="image/png,image/jpeg,image/webp" />
               <div class="upload-placeholder"><span class="upload-icon">↑</span><strong>Upload foto celana</strong><small>JPG, PNG, atau WEBP</small></div>
               <img id="bottom-preview" alt="Pratinjau celana" />
+              <button class="edit-image" id="edit-bottom" type="button">Atur foto</button>
               <button class="clear-image" id="clear-bottom" type="button" aria-label="Hapus foto celana">×</button>
             </label>
             <div class="fields garment-fields">
@@ -121,7 +125,28 @@
         <div class="explain-grid"><article><span>01</span><h3>Avatar proporsional</h3><p>Rasio tinggi, berat, dan foto membentuk siluet non-kartun dengan kepala dan badan yang seimbang.</p></article><article><span>02</span><h3>Baju + celana</h3><p>Lebar dan panjang atasan serta bawahan dibandingkan terhadap torso, pinggang, dan panjang kaki.</p></article><article><span>03</span><h3>Pribadi secara lokal</h3><p>Tidak ada analitik, akun, atau unggahan. Semua simulasi dan foto diproses hanya di browser perangkatmu.</p></article></div>
       </section>
     </main>
+    <dialog class="photo-editor" id="photo-editor" aria-labelledby="editor-title">
+      <form method="dialog" class="editor-shell">
+        <div class="editor-heading">
+          <div><p class="eyebrow">Image sizing</p><h2 id="editor-title">Atur foto</h2></div>
+          <button class="editor-close" value="cancel" aria-label="Tutup editor" type="submit">×</button>
+        </div>
+        <p class="editor-help">Geser foto di dalam bingkai. Gunakan zoom agar objek memenuhi area.</p>
+        <div class="crop-stage" id="crop-stage"><canvas id="crop-canvas" aria-label="Area crop foto"></canvas></div>
+        <div class="editor-controls">
+          <label>Zoom <input id="crop-zoom" type="range" min="1" max="3" step="0.01" value="1" /></label>
+          <label>Ukuran hasil
+            <select id="crop-size"><option value="standard">Standar</option><option value="small">Hemat data</option><option value="large">Detail tinggi</option></select>
+          </label>
+        </div>
+        <div class="editor-actions">
+          <button class="secondary-button" id="crop-rotate" type="button">Putar 90°</button>
+          <button class="primary-button editor-save" id="crop-save" type="button"><span>Simpan crop</span><span class="button-arrow">✓</span></button>
+        </div>
+      </form>
+    </dialog>
     <footer>FORMA <span>·</span> Local, private, and ready on web or mobile.</footer>
+    <script src="photo-editor.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
