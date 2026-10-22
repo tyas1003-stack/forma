@@ -7,16 +7,17 @@
     <meta name="theme-color" content="#17231f" />
     <meta name="description" content="Simulasi virtual try-on pribadi yang berjalan secara lokal." />
     <meta name="referrer" content="no-referrer" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'none'; font-src 'self'; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://forma-ai-proxy.tyas1003.workers.dev; font-src 'self'; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests" />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="photo-editor.css" />
+    <link rel="stylesheet" href="ai.css" />
   </head>
   <body>
     <header class="site-header">
       <a class="brand" href="#top" aria-label="Forma home"><span class="brand-mark">F</span>FORMA</a>
       <span class="header-tag">Web + mobile fitting room</span>
-      <span class="status"><i></i> Local-only</span>
+      <span class="status"><i></i> AI optional</span>
     </header>
 
     <main id="top">
@@ -24,7 +25,7 @@
         <p class="eyebrow">Try it before you buy it</p>
         <h1>Pakaian online,<br /><em>lebih terasa pas.</em></h1>
         <p class="hero-copy">Buka di laptop atau HP: buat avatar proporsional dari foto dan data tubuhmu, lalu lihat simulasi baju <em>dan</em> celana sebelum checkout.</p>
-        <div class="hero-note"><span>01</span> Foto tetap di perangkatmu. Prototipe ini tidak mengunggah data ke server.</div>
+        <div class="hero-note"><span>01</span> Simulasi berjalan lokal. Foto hanya dikirim ke Claude jika kamu menekan analisis AI dan memberikan persetujuan.</div>
       </section>
 
       <section class="workspace" aria-label="Virtual try-on workspace">
@@ -112,6 +113,15 @@
             <div><span>Panjang celana vs kaki</span><strong id="bottom-length-result">—</strong></div>
           </div>
           <p class="disclaimer">*Perhitungan awal menggunakan tinggi dan berat. Foto tunggal tidak bisa mengukur bentuk tubuh atau lingkar dada dengan akurasi klinis.</p>
+          <section class="ai-panel" aria-labelledby="ai-title">
+            <div class="ai-heading"><span class="ai-mark">✦</span><div><p class="eyebrow">Claude vision</p><h3 id="ai-title">Analisis outfit dengan AI</h3></div></div>
+            <p class="ai-copy">Claude memberi catatan visual tentang proporsi baju dan celana. Ini bukan hasil try-on fotorealistik atau jaminan ukuran.</p>
+            <label class="token-field">Kode akses privat<input id="ai-access" type="password" autocomplete="off" spellcheck="false" placeholder="Masukkan ACCESS_TOKEN" /></label>
+            <label class="consent-field"><input id="ai-consent" type="checkbox" /> <span>Saya setuju tiga foto hasil crop dan ukuran dikirim melalui Cloudflare ke Anthropic untuk dianalisis.</span></label>
+            <button class="ai-button" id="ai-analyze" type="button"><span>Analisis dengan Claude</span><span>↗</span></button>
+            <p class="ai-status" id="ai-status" role="status" aria-live="polite"></p>
+            <div class="ai-result" id="ai-result" hidden><div class="ai-result-title"><strong>Catatan Claude</strong><button id="ai-clear" type="button">Hapus</button></div><p id="ai-result-text"></p></div>
+          </section>
         </aside>
       </section>
 
@@ -122,7 +132,7 @@
 
       <section class="how-it-works">
         <p class="eyebrow">What this prototype does</p>
-        <div class="explain-grid"><article><span>01</span><h3>Avatar proporsional</h3><p>Rasio tinggi, berat, dan foto membentuk siluet non-kartun dengan kepala dan badan yang seimbang.</p></article><article><span>02</span><h3>Baju + celana</h3><p>Lebar dan panjang atasan serta bawahan dibandingkan terhadap torso, pinggang, dan panjang kaki.</p></article><article><span>03</span><h3>Pribadi secara lokal</h3><p>Tidak ada analitik, akun, atau unggahan. Semua simulasi dan foto diproses hanya di browser perangkatmu.</p></article></div>
+        <div class="explain-grid"><article><span>01</span><h3>Avatar proporsional</h3><p>Rasio tinggi, berat, dan foto membentuk siluet non-kartun dengan kepala dan badan yang seimbang.</p></article><article><span>02</span><h3>Baju + celana</h3><p>Lebar dan panjang atasan serta bawahan dibandingkan terhadap torso, pinggang, dan panjang kaki.</p></article><article><span>03</span><h3>Privasi terkontrol</h3><p>Simulasi tetap lokal. Analisis Claude bersifat opsional dan hanya berjalan setelah persetujuan eksplisit.</p></article></div>
       </section>
     </main>
     <dialog class="photo-editor" id="photo-editor" aria-labelledby="editor-title">
@@ -148,5 +158,6 @@
     <footer>FORMA <span>·</span> Local, private, and ready on web or mobile.</footer>
     <script src="photo-editor.js"></script>
     <script src="app.js"></script>
+    <script src="ai.js"></script>
   </body>
 </html>

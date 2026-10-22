@@ -1,6 +1,7 @@
 name = "forma-ai-proxy"
 main = "claude-worker.js"
 compatibility_date = "2025-10-01"
+workers_dev = true
 
 [vars]
 # Public website allowed to call this Worker. Do not put secrets in this file.

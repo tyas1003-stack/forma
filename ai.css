@@ -1,0 +1,17 @@
+.ai-panel { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--line); }
+.ai-heading { display: flex; gap: 11px; align-items: center; }
+.ai-heading .eyebrow { margin-bottom: 3px; }
+.ai-heading h3 { margin: 0; font: 600 19px var(--serif); }
+.ai-mark { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--lime); }
+.ai-copy { margin: 12px 0 16px; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.token-field { display: block; font-size: 12px; font-weight: 600; }
+.token-field input { display: block; width: 100%; margin-top: 7px; padding: 12px; border: 1px solid var(--line); background: #fff; font: 14px var(--sans); }
+.consent-field { display: flex; gap: 9px; align-items: flex-start; margin: 13px 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
+.consent-field input { width: 18px; height: 18px; flex: 0 0 auto; margin: 0; accent-color: var(--ink); }
+.ai-button { display: flex; justify-content: space-between; width: 100%; min-height: 49px; align-items: center; border: 0; padding: 0 15px; background: var(--ink); color: #fff; font-weight: 600; cursor: pointer; }
+.ai-button:disabled { cursor: wait; opacity: 0.58; }
+.ai-status { min-height: 17px; margin: 8px 0 0; color: #715228; font-size: 11px; }
+.ai-result { margin-top: 12px; padding: 14px; border: 1px solid #cdd7c4; background: #f4f8ec; }
+.ai-result-title { display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+.ai-result-title button { border: 0; background: transparent; color: var(--muted); text-decoration: underline; font-size: 11px; }
+.ai-result p { margin: 10px 0 0; white-space: pre-wrap; font-size: 12px; line-height: 1.55; }
