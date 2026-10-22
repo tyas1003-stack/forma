@@ -67,8 +67,12 @@ export default {
     if (await rateLimited(request)) return json({ error: "Batas analisis sementara tercapai. Coba lagi sekitar 10 menit." }, 429, headers);
 
     const prompt = `Kamu adalah asisten virtual try-on. Analisis foto atasan dan bawahan sebagai referensi visual saja; jangan mengidentifikasi orang atau menebak atribut sensitif. Data: tinggi ${measurements.height} cm, berat ${measurements.weight} kg, panjang/lebar atasan ${measurements.topLength}/${measurements.topWidth} cm, panjang/lebar bawahan ${measurements.bottomLength}/${measurements.bottomWidth} cm. Beri jawaban Bahasa Indonesia dengan: (1) kecocokan visual singkat, (2) catatan proporsi atasan dan bawahan, (3) keterbatasan akurasi. Jangan memberi jaminan ukuran.`;
+    const requestedModel = env.CLAUDE_MODEL;
+    const model = requestedModel && requestedModel !== "claude-haiku-5-5"
+      ? requestedModel
+      : "claude-haiku-4-5-20251001";
     const message = {
-      model: env.CLAUDE_MODEL || "claude-haiku-5-5",
+      model,
       max_tokens: 450,
       messages: [{ role: "user", content: [{ type: "text", text: prompt }, ...images.map((source) => ({ type: "image", source }))] }],
     };
@@ -88,8 +92,23 @@ export default {
       return json({ error: "Layanan AI tidak merespons tepat waktu." }, 504, headers);
     }
     clearTimeout(timeout);
-    if (!response.ok) return json({ error: "Layanan AI belum dapat memproses permintaan." }, 502, headers);
-    const result = await response.json();
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const type = result?.error?.type || "";
+      if (response.status === 401 || type === "authentication_error") {
+        return json({ error: "Kunci API Anthropic tidak valid. Perbarui ANTHROPIC_API_KEY di Cloudflare." }, 502, headers);
+      }
+      if (response.status === 402 || type === "billing_error") {
+        return json({ error: "Kredit API Anthropic tidak mencukupi. Periksa billing di Anthropic Console." }, 502, headers);
+      }
+      if (response.status === 429 || type === "rate_limit_error") {
+        return json({ error: "Anthropic sedang membatasi permintaan. Coba lagi beberapa menit." }, 429, headers);
+      }
+      if (response.status === 400 || type === "invalid_request_error") {
+        return json({ error: "Claude menolak format gambar atau model. Crop ulang foto lalu coba lagi." }, 400, headers);
+      }
+      return json({ error: "Layanan Claude sedang bermasalah. Coba lagi beberapa saat." }, 502, headers);
+    }
     return json({ analysis: extractText(result) }, 200, headers);
   },
 };

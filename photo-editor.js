@@ -115,13 +115,14 @@
   function removeEdgeBackground(output) {
     const context = output.getContext('2d', { willReadFrequently: true });
     const frame = context.getImageData(0, 0, output.width, output.height);
+    const original = new Uint8ClampedArray(frame.data);
     const pixels = frame.data;
     const visited = new Uint8Array(output.width * output.height);
     const queue = [];
     const isBackground = (index) => {
       const offset = index * 4;
       const r = pixels[offset], g = pixels[offset + 1], b = pixels[offset + 2], a = pixels[offset + 3];
-      return a < 12 || (r > 218 && g > 218 && b > 218 && Math.max(r,g,b) - Math.min(r,g,b) < 34);
+      return a < 12 || (r > 248 && g > 248 && b > 248 && Math.max(r,g,b) - Math.min(r,g,b) < 8);
     };
     const add = (index) => { if (!visited[index] && isBackground(index)) { visited[index] = 1; queue.push(index); } };
     for (let x = 0; x < output.width; x += 2) { add(x); add((output.height - 1) * output.width + x); }
@@ -134,6 +135,9 @@
       if (y > 0) add(index - output.width);
       if (y + 1 < output.height) add(index + output.width);
     }
+    // A pale garment can touch the crop edge. Keep the source rather than
+    // erasing the product when the detected background becomes too large.
+    if (queue.length > output.width * output.height * .28) frame.data.set(original);
     context.putImageData(frame, 0, 0);
   }
   function maskFace(output) {
