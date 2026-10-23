@@ -145,12 +145,12 @@
           </div>
           <p class="disclaimer">*Avatar merupakan alat visualisasi gaya berdasarkan tinggi badan, bukan jaminan kecocokan pakaian.</p>
           <section class="ai-panel" aria-labelledby="ai-title">
-            <div class="ai-heading"><span class="ai-mark">✦</span><div><p class="eyebrow">Claude vision</p><h3 id="ai-title">Analisis outfit dengan AI</h3></div></div>
-            <p class="ai-copy">Claude memberi catatan visual tentang proporsi baju dan celana. Ini bukan hasil try-on fotorealistik atau jaminan ukuran.</p>
-            <label class="consent-field"><input id="ai-consent" type="checkbox" /> <span>Saya setuju foto baju, foto bawahan, dan ukuran dikirim melalui Cloudflare ke Anthropic untuk dianalisis.</span></label>
-            <button class="ai-button" id="ai-analyze" type="button"><span>Analisis dengan Claude</span><span>↗</span></button>
+            <div class="ai-heading"><span class="ai-mark">✦</span><div><p class="eyebrow">Gemini vision · free tier</p><h3 id="ai-title">Analisis outfit dengan AI</h3></div></div>
+            <p class="ai-copy">Gemini memberi catatan visual tentang proporsi baju dan celana. Ini bukan hasil try-on fotorealistik atau jaminan ukuran.</p>
+            <label class="consent-field"><input id="ai-consent" type="checkbox" /> <span>Saya setuju foto baju, foto bawahan, dan ukuran dikirim melalui Cloudflare ke Google Gemini untuk dianalisis.</span></label>
+            <button class="ai-button" id="ai-analyze" type="button"><span>Analisis dengan Gemini</span><span>↗</span></button>
             <p class="ai-status" id="ai-status" role="status" aria-live="polite"></p>
-            <div class="ai-result" id="ai-result" hidden><div class="ai-result-title"><strong>Catatan Claude</strong><button id="ai-clear" type="button">Hapus</button></div><p id="ai-result-text"></p></div>
+            <div class="ai-result" id="ai-result" hidden><div class="ai-result-title"><strong>Catatan Gemini</strong><button id="ai-clear" type="button">Hapus</button></div><p id="ai-result-text"></p></div>
           </section>
         </aside>
       </section>
@@ -224,7 +224,7 @@
 
       <section class="how-it-works">
         <p class="eyebrow">What this prototype does</p>
-        <div class="explain-grid"><article><span>01</span><h3>Avatar proporsional</h3><p>Tinggi badan mengatur skala avatar tanpa membutuhkan foto pribadi atau berat badan.</p></article><article><span>02</span><h3>Baju + bawahan</h3><p>Lebar dan panjang atasan serta bawahan divisualkan sebagai panduan proporsi.</p></article><article><span>03</span><h3>Privasi terkontrol</h3><p>Simulasi tetap lokal. Analisis Claude bersifat opsional dan hanya berjalan setelah persetujuan eksplisit.</p></article></div>
+        <div class="explain-grid"><article><span>01</span><h3>Avatar proporsional</h3><p>Tinggi badan mengatur skala avatar tanpa membutuhkan foto pribadi atau berat badan.</p></article><article><span>02</span><h3>Baju + bawahan</h3><p>Lebar dan panjang atasan serta bawahan divisualkan sebagai panduan proporsi.</p></article><article><span>03</span><h3>Privasi terkontrol</h3><p>Simulasi tetap lokal. Analisis Gemini bersifat opsional dan hanya berjalan setelah persetujuan eksplisit.</p></article></div>
       </section>
     </main>
     <dialog class="photo-editor" id="photo-editor" aria-labelledby="editor-title">
@@ -251,7 +251,7 @@
     <script src="photo-editor.js?v=5"></script>
     <script src="app.js"></script>
     <script src="fitting-editor.js?v=4"></script>
-    <script src="ai.js?v=8"></script>
+    <script src="ai.js?v=9"></script>
     <script src="closet.js?v=1"></script>
   </body>
 </html>

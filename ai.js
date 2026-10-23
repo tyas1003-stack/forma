@@ -38,7 +38,7 @@
   function validate(data) {
     if (!data.topImage || !data.bottomImage) return 'Upload dan crop foto baju serta bawahan terlebih dahulu.';
     if (Object.values(data.measurements).some((value) => !Number.isFinite(value) || value <= 0)) return 'Lengkapi tinggi, berat, dan seluruh ukuran pakaian.';
-    if (!consent.checked) return 'Centang persetujuan pengiriman foto sebelum memakai Claude.';
+    if (!consent.checked) return 'Centang persetujuan pengiriman foto sebelum memakai Gemini.';
     return '';
   }
 
@@ -51,7 +51,7 @@
     const timeout = setTimeout(() => controller.abort(), 65000);
     button.disabled = true;
     result.hidden = true;
-    status.textContent = 'Claude sedang membaca foto dan ukuran…';
+    status.textContent = 'Gemini sedang membaca foto dan ukuran…';
 
     try {
       const response = await fetch(endpoint, {
@@ -63,9 +63,9 @@
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) {
         if (response.status === 429) throw new Error('Batas analisis sementara tercapai. Coba lagi sekitar 10 menit.');
-        throw new Error(payload.error || 'Claude belum dapat memproses permintaan.');
+        throw new Error(payload.error || 'Gemini belum dapat memproses permintaan.');
       }
-      resultText.textContent = payload.analysis || 'Claude tidak mengembalikan catatan.';
+      resultText.textContent = payload.analysis || 'Gemini tidak mengembalikan catatan.';
       result.hidden = false;
       status.textContent = 'Analisis selesai.';
       result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

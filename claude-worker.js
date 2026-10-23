@@ -26,11 +26,11 @@ function dataUrlToImage(value) {
   if (!match || !ALLOWED_MEDIA_TYPES.has(match[1])) return null;
   const bytes = Math.floor((match[2].length * 3) / 4);
   if (bytes > MAX_IMAGE_BYTES) return null;
-  return { type: "base64", media_type: match[1], data: match[2] };
+  return { inlineData: { mimeType: match[1], data: match[2] } };
 }
 
 function extractText(payload) {
-  return payload.content?.filter((item) => item.type === "text").map((item) => item.text).join("\n") || "";
+  return payload.candidates?.[0]?.content?.parts?.map((part) => part.text || "").join("\n") || "";
 }
 
 async function rateLimited(request) {
@@ -52,7 +52,7 @@ export default {
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers });
     if (request.method !== "POST") return json({ error: "Method not allowed." }, 405, headers);
     if (request.headers.get("Origin") !== env.ALLOWED_ORIGIN) return json({ error: "Origin tidak diizinkan." }, 403, headers);
-    if (!env.ANTHROPIC_API_KEY) return json({ error: "AI belum dikonfigurasi." }, 503, headers);
+    if (!env.GEMINI_API_KEY) return json({ error: "Gemini belum dikonfigurasi. Tambahkan GEMINI_API_KEY di Cloudflare." }, 503, headers);
 
     let body;
     try { body = await request.json(); } catch { return json({ error: "Payload tidak valid." }, 400, headers); }
@@ -67,23 +67,23 @@ export default {
     if (await rateLimited(request)) return json({ error: "Batas analisis sementara tercapai. Coba lagi sekitar 10 menit." }, 429, headers);
 
     const prompt = `Kamu adalah asisten virtual try-on. Analisis foto atasan dan bawahan sebagai referensi visual saja; jangan mengidentifikasi orang atau menebak atribut sensitif. Data: tinggi ${measurements.height} cm, berat ${measurements.weight} kg, panjang/lebar atasan ${measurements.topLength}/${measurements.topWidth} cm, panjang/lebar bawahan ${measurements.bottomLength}/${measurements.bottomWidth} cm. Beri jawaban Bahasa Indonesia dengan: (1) kecocokan visual singkat, (2) catatan proporsi atasan dan bawahan, (3) keterbatasan akurasi. Jangan memberi jaminan ukuran.`;
-    const requestedModel = env.CLAUDE_MODEL;
-    const model = requestedModel && requestedModel !== "claude-haiku-5-5"
-      ? requestedModel
-      : "claude-haiku-4-5-20251001";
+    const model = env.GEMINI_MODEL || "gemini-2.5-flash-lite";
     const message = {
-      model,
-      max_tokens: 450,
-      messages: [{ role: "user", content: [{ type: "text", text: prompt }, ...images.map((source) => ({ type: "image", source }))] }],
+      contents: [{ role: "user", parts: [{ text: prompt }, ...images] }],
+      generationConfig: { maxOutputTokens: 450 },
     };
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 55000);
     let response;
     try {
-      response = await fetch("https://api.anthropic.com/v1/messages", {
+      const geminiHeaders = {
+        "content-type": "application/json",
+        "x-goog-api-key": env.GEMINI_API_KEY,
+      };
+      response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
         method: "POST",
-        headers: { "content-type": "application/json", "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01" },
+        headers: geminiHeaders,
         body: JSON.stringify(message),
         signal: controller.signal,
       });
@@ -94,29 +94,25 @@ export default {
     clearTimeout(timeout);
     const result = await response.json().catch(() => ({}));
     if (!response.ok) {
-      const type = result?.error?.type || "";
-      const detail = String(result?.error?.message || "");
+      const detail = String(result?.error?.message || result?.message || "");
       const normalizedDetail = detail.toLowerCase();
-      if (response.status === 401 || type === "authentication_error") {
-        return json({ error: "Kunci API Anthropic tidak valid. Perbarui ANTHROPIC_API_KEY di Cloudflare." }, 502, headers);
+      if (response.status === 401 || response.status === 403 || normalizedDetail.includes("api key")) {
+        return json({ error: "Kunci API Gemini tidak valid atau tidak memiliki akses. Perbarui GEMINI_API_KEY di Cloudflare." }, 502, headers);
       }
-      if (response.status === 402 || type === "billing_error" || normalizedDetail.includes("credit balance") || normalizedDetail.includes("billing")) {
-        return json({ error: "Kredit API Anthropic tidak mencukupi. Periksa billing di Anthropic Console." }, 502, headers);
-      }
-      if (response.status === 429 || type === "rate_limit_error") {
-        return json({ error: "Anthropic sedang membatasi permintaan. Coba lagi beberapa menit." }, 429, headers);
+      if (response.status === 429 || normalizedDetail.includes("quota")) {
+        return json({ error: "Kuota gratis Gemini sementara habis. Coba lagi setelah kuota direset." }, 429, headers);
       }
       if (normalizedDetail.includes("image")) {
-        return json({ error: "Claude menolak salah satu gambar. Upload ulang foto JPG/PNG yang jelas lalu coba lagi." }, 400, headers);
+        return json({ error: "Gemini menolak salah satu gambar. Upload ulang foto JPG/PNG yang jelas lalu coba lagi." }, 400, headers);
       }
       if (normalizedDetail.includes("model")) {
-        return json({ error: "Model Claude belum tersedia untuk API key ini. Periksa akses model di Anthropic Console." }, 400, headers);
+        return json({ error: "Model Gemini gratis belum tersedia untuk API key ini. Periksa proyek di Google AI Studio." }, 400, headers);
       }
-      if (response.status === 400 || type === "invalid_request_error") {
+      if (response.status === 400) {
         const safeDetail = detail.replace(/[\r\n]+/g, " ").slice(0, 180);
-        return json({ error: safeDetail ? `Anthropic menolak permintaan: ${safeDetail}` : "Anthropic menolak permintaan. Periksa pengaturan API Anthropic." }, 400, headers);
+        return json({ error: safeDetail ? `Gemini menolak permintaan: ${safeDetail}` : "Gemini menolak permintaan. Periksa API key dan format gambar." }, 400, headers);
       }
-      return json({ error: "Layanan Claude sedang bermasalah. Coba lagi beberapa saat." }, 502, headers);
+      return json({ error: "Layanan Gemini sedang bermasalah. Coba lagi beberapa saat." }, 502, headers);
     }
     return json({ analysis: extractText(result) }, 200, headers);
   },
