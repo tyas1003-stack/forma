@@ -67,7 +67,7 @@ export default {
     if (await rateLimited(request)) return json({ error: "Batas analisis sementara tercapai. Coba lagi sekitar 10 menit." }, 429, headers);
 
     const prompt = `Kamu adalah asisten virtual try-on. Analisis foto atasan dan bawahan sebagai referensi visual saja; jangan mengidentifikasi orang atau menebak atribut sensitif. Data: tinggi ${measurements.height} cm, berat ${measurements.weight} kg, panjang/lebar atasan ${measurements.topLength}/${measurements.topWidth} cm, panjang/lebar bawahan ${measurements.bottomLength}/${measurements.bottomWidth} cm. Beri jawaban Bahasa Indonesia dengan: (1) kecocokan visual singkat, (2) catatan proporsi atasan dan bawahan, (3) keterbatasan akurasi. Jangan memberi jaminan ukuran.`;
-    const model = env.GEMINI_MODEL || "gemini-2.5-flash-lite";
+    const model = env.GEMINI_MODEL || "gemini-3.5-flash-lite";
     const message = {
       contents: [{ role: "user", parts: [{ text: prompt }, ...images] }],
       generationConfig: { maxOutputTokens: 450 },
@@ -106,7 +106,7 @@ export default {
         return json({ error: "Gemini menolak salah satu gambar. Upload ulang foto JPG/PNG yang jelas lalu coba lagi." }, 400, headers);
       }
       if (normalizedDetail.includes("model")) {
-        return json({ error: "Model Gemini gratis belum tersedia untuk API key ini. Periksa proyek di Google AI Studio." }, 400, headers);
+        return json({ error: "Model Gemini belum tersedia untuk proyek ini. Periksa status model di Google AI Studio." }, 400, headers);
       }
       if (response.status === 400) {
         const safeDetail = detail.replace(/[\r\n]+/g, " ").slice(0, 180);
