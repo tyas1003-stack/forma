@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="photo-editor.css" />
     <link rel="stylesheet" href="ai.css" />
     <link rel="stylesheet" href="fitting-editor.css?v=3" />
-    <link rel="stylesheet" href="theme.css?v=1" />
+    <link rel="stylesheet" href="theme.css?v=2" />
   </head>
   <body>
     <header class="site-header">
@@ -32,8 +32,34 @@
           <span class="hero-sparkle" aria-hidden="true">✦</span>
         </div>
         <div class="hero-visual" aria-hidden="true">
-          <div class="mini-mannequin"><i></i><b></b><span></span></div>
-          <p>YOUR SIZE<br />YOUR STYLE</p>
+          <svg class="fashion-figure" viewBox="0 0 360 420" role="presentation">
+            <defs>
+              <linearGradient id="formaDress" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#e11920" />
+                <stop offset="1" stop-color="#a80f18" />
+              </linearGradient>
+              <filter id="formaShadow" x="-30%" y="-20%" width="160%" height="160%">
+                <feDropShadow dx="0" dy="16" stdDeviation="12" flood-color="#7b211e" flood-opacity=".22" />
+              </filter>
+            </defs>
+            <ellipse cx="180" cy="386" rx="100" ry="17" fill="#a94943" opacity=".2" />
+            <g filter="url(#formaShadow)">
+              <path d="M153 83c2-28 14-48 32-48 19 0 31 19 31 47 0 25-12 45-31 45-18 0-34-19-32-44Z" fill="#d89b7c" />
+              <path d="M150 70c4-29 21-47 41-43 18 4 30 23 26 48-12-4-23-14-29-29-8 15-21 27-38 32Z" fill="#3e211f" />
+              <path d="M172 117h27v39h-27z" fill="#d89b7c" />
+              <path d="M132 153c17-20 35-28 53-28 19 0 38 9 55 29l-23 97H150Z" fill="url(#formaDress)" />
+              <path d="M150 230c-13 44-26 92-35 146h140c-8-52-21-101-38-146Z" fill="url(#formaDress)" />
+              <path d="M136 157c-18 31-34 68-42 111" fill="none" stroke="#d89b7c" stroke-width="18" stroke-linecap="round" />
+              <path d="M235 158c18 30 33 67 40 108" fill="none" stroke="#d89b7c" stroke-width="18" stroke-linecap="round" />
+              <path d="M157 375v19M215 375v19" stroke="#d89b7c" stroke-width="14" stroke-linecap="round" />
+              <path d="M142 395h30M200 395h31" stroke="#4c2421" stroke-width="9" stroke-linecap="round" />
+              <path d="M151 226c22 11 45 11 68 0" fill="none" stroke="#ffb6ae" stroke-width="3" opacity=".8" />
+            </g>
+            <path d="M74 104c28-32 61-51 98-57M283 123c-18-27-39-45-65-57" fill="none" stroke="#fff4e5" stroke-width="3" stroke-linecap="round" opacity=".8" />
+            <circle cx="70" cy="108" r="5" fill="#fff4e5" />
+            <path d="m281 106 5 11 11 5-11 5-5 11-5-11-11-5 11-5Z" fill="#fff4e5" />
+          </svg>
+          <p>YOUR FIT<br />YOUR STYLE</p>
         </div>
         <div class="hero-note"><span>01</span> Lokal &amp; privat. Hanya foto pakaian yang dikirim saat kamu memilih analisis AI.</div>
       </section>
