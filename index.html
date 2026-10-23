@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Forma — Virtual Try-On</title>
-    <meta name="theme-color" content="#f7a9b8" />
+    <meta name="theme-color" content="#f2e3d4" />
     <meta name="description" content="Simulasi virtual try-on pribadi yang berjalan secara lokal." />
     <meta name="referrer" content="no-referrer" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://forma-ai-proxy.tyas1003.workers.dev; font-src 'self'; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests" />
@@ -13,53 +13,38 @@
     <link rel="stylesheet" href="photo-editor.css" />
     <link rel="stylesheet" href="ai.css" />
     <link rel="stylesheet" href="fitting-editor.css?v=3" />
-    <link rel="stylesheet" href="theme.css?v=2" />
+    <link rel="stylesheet" href="theme.css?v=7" />
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="#top" aria-label="Forma home"><span class="brand-mark">F</span>FORMA</a>
-      <span class="header-tag">Web + mobile fitting room</span>
-      <span class="status"><i></i> AI optional</span>
+      <nav class="header-nav header-nav-left" aria-label="Navigasi utama"><a href="#tryon-form">Try-on</a><a href="#wardrobe">Lemari</a></nav>
+      <a class="brand" href="#top" aria-label="Forma home"><span class="brand-monogram" aria-hidden="true"><i>F</i><i>M</i></span><span class="brand-word">FORMA</span><small>VIRTUAL ATELIER</small></a>
+      <nav class="header-nav header-nav-right" aria-label="Navigasi akun"><a href="#looks">Looks</a><a href="#planner">Planner</a></nav>
     </header>
 
     <main id="top">
       <section class="hero">
         <div class="hero-card">
           <p class="eyebrow">Virtual fitting room</p>
-          <h1>Find Your<br /><em>Perfect Fit.</em></h1>
+          <h1>Good fit.<br /><em>Great style.</em></h1>
           <p class="hero-copy">Masukkan tinggi untuk membuat avatar, lalu atur pakaian dan lihat kombinasi baju serta bawahan sebelum checkout.</p>
           <a class="hero-action" href="#tryon-form">Mulai fitting <span>→</span></a>
           <span class="hero-sparkle" aria-hidden="true">✦</span>
         </div>
         <div class="hero-visual" aria-hidden="true">
-          <svg class="fashion-figure" viewBox="0 0 360 420" role="presentation">
-            <defs>
-              <linearGradient id="formaDress" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#e11920" />
-                <stop offset="1" stop-color="#a80f18" />
-              </linearGradient>
-              <filter id="formaShadow" x="-30%" y="-20%" width="160%" height="160%">
-                <feDropShadow dx="0" dy="16" stdDeviation="12" flood-color="#7b211e" flood-opacity=".22" />
-              </filter>
-            </defs>
-            <ellipse cx="180" cy="386" rx="100" ry="17" fill="#a94943" opacity=".2" />
-            <g filter="url(#formaShadow)">
-              <path d="M153 83c2-28 14-48 32-48 19 0 31 19 31 47 0 25-12 45-31 45-18 0-34-19-32-44Z" fill="#d89b7c" />
-              <path d="M150 70c4-29 21-47 41-43 18 4 30 23 26 48-12-4-23-14-29-29-8 15-21 27-38 32Z" fill="#3e211f" />
-              <path d="M172 117h27v39h-27z" fill="#d89b7c" />
-              <path d="M132 153c17-20 35-28 53-28 19 0 38 9 55 29l-23 97H150Z" fill="url(#formaDress)" />
-              <path d="M150 230c-13 44-26 92-35 146h140c-8-52-21-101-38-146Z" fill="url(#formaDress)" />
-              <path d="M136 157c-18 31-34 68-42 111" fill="none" stroke="#d89b7c" stroke-width="18" stroke-linecap="round" />
-              <path d="M235 158c18 30 33 67 40 108" fill="none" stroke="#d89b7c" stroke-width="18" stroke-linecap="round" />
-              <path d="M157 375v19M215 375v19" stroke="#d89b7c" stroke-width="14" stroke-linecap="round" />
-              <path d="M142 395h30M200 395h31" stroke="#4c2421" stroke-width="9" stroke-linecap="round" />
-              <path d="M151 226c22 11 45 11 68 0" fill="none" stroke="#ffb6ae" stroke-width="3" opacity=".8" />
-            </g>
-            <path d="M74 104c28-32 61-51 98-57M283 123c-18-27-39-45-65-57" fill="none" stroke="#fff4e5" stroke-width="3" stroke-linecap="round" opacity=".8" />
-            <circle cx="70" cy="108" r="5" fill="#fff4e5" />
-            <path d="m281 106 5 11 11 5-11 5-5 11-5-11-11-5 11-5Z" fill="#fff4e5" />
-          </svg>
-          <p>YOUR FIT<br />YOUR STYLE</p>
+          <div class="outfit-loop" role="presentation">
+            <div class="fabric-fold fold-one"></div><div class="fabric-fold fold-two"></div>
+            <div class="outfit-slide outfit-slide-one">
+              <img class="look-one-top" src="assets/hero-top-2026.png" alt="" />
+              <img class="look-one-bottom" src="assets/hero-bottom-2026.png" alt="" />
+            </div>
+            <img class="outfit-slide outfit-slide-two" src="assets/hero-look-2.png" alt="" />
+            <img class="outfit-slide outfit-slide-three" src="assets/hero-look-3.png" alt="" />
+            <img class="outfit-slide outfit-slide-four" src="assets/hero-look-4.png" alt="" />
+            <img class="outfit-slide outfit-slide-five" src="assets/hero-look-5.png" alt="" />
+            <span class="tape tape-top"></span><span class="tape tape-bottom"></span>
+            <b>TOP + BOTTOM<br />MIX YOUR LOOK</b>
+          </div>
         </div>
         <div class="hero-note"><span>01</span> Lokal &amp; privat. Hanya foto pakaian yang dikirim saat kamu memilih analisis AI.</div>
       </section>
@@ -84,7 +69,7 @@
             </label>
             <div hidden aria-hidden="true"><input id="weight" type="number" value="55" /></div>
             <div class="fields avatar-height-field">
-              <label>Tinggi badan <span class="unit">cm</span><input id="height" inputmode="numeric" type="number" min="120" max="230" placeholder="contoh 165" required /></label>
+              <label>Tinggi badan <span class="required-mark">*</span> <span class="unit">cm</span><input id="height" inputmode="numeric" type="number" min="120" max="230" placeholder="contoh 165" required /></label>
             </div>
             <div class="mannequin-intro">
               <div class="mannequin-badge">✦</div>
@@ -100,14 +85,14 @@
             <div class="panel-heading"><span class="step">02</span><div><h2>Baju yang ingin dicoba</h2><p>Foto produk tampak depan, dengan latar polos, bekerja paling baik.</p></div></div>
             <label class="upload-zone garment-zone" id="top-upload-zone" for="top-photo">
               <input id="top-photo" type="file" accept="image/png,image/jpeg,image/webp" />
-              <div class="upload-placeholder"><span class="upload-icon">↑</span><strong>Upload foto baju</strong><small>JPG, PNG, atau WEBP</small></div>
+              <div class="upload-placeholder"><span class="upload-icon">↑</span><strong>Upload foto baju <span class="required-mark">*</span></strong><small>JPG, PNG, atau WEBP</small></div>
               <img id="top-preview" alt="Pratinjau baju" />
               <button class="edit-image" id="edit-top" type="button">Atur foto</button>
               <button class="clear-image" id="clear-top" type="button" aria-label="Hapus foto baju">×</button>
             </label>
             <div class="fields garment-fields">
-              <label>Panjang baju <span class="unit">cm</span><input id="top-length" inputmode="decimal" type="number" min="20" max="180" step="0.5" placeholder="contoh 68" required /></label>
-              <label>Lebar dada (pit-to-pit) <span class="unit">cm</span><input id="top-width" inputmode="decimal" type="number" min="20" max="120" step="0.5" placeholder="contoh 52" required /></label>
+              <label>Panjang baju <span class="required-mark">*</span> <span class="unit">cm</span><input id="top-length" inputmode="decimal" type="number" min="20" max="180" step="0.5" placeholder="contoh 68" required /></label>
+              <label>Lebar dada (pit-to-pit) <span class="required-mark">*</span> <span class="unit">cm</span><input id="top-width" inputmode="decimal" type="number" min="20" max="120" step="0.5" placeholder="contoh 52" required /></label>
             </div>
             <p class="measurement-note">Ukur pakaian dalam keadaan dibentangkan. Lebar akan dikonversi menjadi keliling dada ± 2× lebar.</p>
           </div>
@@ -116,15 +101,15 @@
             <div class="panel-heading"><span class="step">03</span><div><h2>Bawahan yang ingin dicoba</h2><p>Gunakan foto celana panjang atau rok dari tampak depan.</p></div></div>
             <label class="upload-zone garment-zone" id="bottom-upload-zone" for="bottom-photo">
               <input id="bottom-photo" type="file" accept="image/png,image/jpeg,image/webp" />
-              <div class="upload-placeholder"><span class="upload-icon">↑</span><strong>Upload foto bawahan</strong><small>JPG, PNG, atau WEBP</small></div>
+              <div class="upload-placeholder"><span class="upload-icon">↑</span><strong>Upload foto bawahan <span class="required-mark">*</span></strong><small>JPG, PNG, atau WEBP</small></div>
               <img id="bottom-preview" alt="Pratinjau celana" />
               <button class="edit-image" id="edit-bottom" type="button">Atur foto</button>
               <button class="clear-image" id="clear-bottom" type="button" aria-label="Hapus foto celana">×</button>
             </label>
             <div class="fields garment-fields">
-              <label>Model bawahan<select id="bottom-kind"><option value="skirt" selected>Rok</option><option value="pants">Celana</option></select></label>
-              <label>Panjang bawahan <span class="unit">cm</span><input id="bottom-length" inputmode="decimal" type="number" min="25" max="150" step="0.5" placeholder="contoh 98" required /></label>
-              <label>Lebar pinggang <span class="unit">cm</span><input id="bottom-width" inputmode="decimal" type="number" min="20" max="90" step="0.5" placeholder="contoh 36" required /></label>
+              <label>Model bawahan <span class="required-mark">*</span><select id="bottom-kind"><option value="skirt" selected>Rok</option><option value="pants">Celana</option></select></label>
+              <label>Panjang bawahan <span class="required-mark">*</span> <span class="unit">cm</span><input id="bottom-length" inputmode="decimal" type="number" min="25" max="150" step="0.5" placeholder="contoh 98" required /></label>
+              <label>Lebar pinggang <span class="required-mark">*</span> <span class="unit">cm</span><input id="bottom-width" inputmode="decimal" type="number" min="20" max="90" step="0.5" placeholder="contoh 36" required /></label>
             </div>
             <p class="measurement-note">Panjang diukur dari pinggang hingga ujung. Lebar pinggang dibentangkan rata dan dikonversi menjadi keliling ± 2× lebar.</p>
           </div>
@@ -274,8 +259,8 @@
       </form>
     </dialog>
     <footer>FORMA <span>·</span> Local, private, and ready on web or mobile.</footer>
-    <script src="photo-editor.js?v=5"></script>
-    <script src="app.js"></script>
+    <script src="photo-editor.js?v=6"></script>
+    <script src="app.js?v=2"></script>
     <script src="fitting-editor.js?v=4"></script>
     <script src="gemini.js?v=2"></script>
     <script src="closet.js?v=1"></script>

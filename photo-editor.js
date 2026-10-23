@@ -118,14 +118,33 @@
     const pixels = frame.data;
     const visited = new Uint8Array(output.width * output.height);
     const queue = [];
+    const sample = (x, y) => {
+      const colors = [];
+      for (let oy = 0; oy < 8; oy += 2) for (let ox = 0; ox < 8; ox += 2) {
+        const px = Math.min(output.width - 1, Math.max(0, x + ox));
+        const py = Math.min(output.height - 1, Math.max(0, y + oy));
+        const offset = (py * output.width + px) * 4;
+        colors.push([pixels[offset], pixels[offset + 1], pixels[offset + 2]]);
+      }
+      return colors;
+    };
+    const backgrounds = [
+      ...sample(0, 0), ...sample(output.width - 8, 0),
+      ...sample(0, output.height - 8), ...sample(output.width - 8, output.height - 8)
+    ];
     const isBackground = (index) => {
       const offset = index * 4;
       const r = pixels[offset], g = pixels[offset + 1], b = pixels[offset + 2], a = pixels[offset + 3];
-      return a < 12 || (r > 248 && g > 248 && b > 248 && Math.max(r,g,b) - Math.min(r,g,b) < 8);
+      if (a < 12) return true;
+      const neutralLight = Math.min(r, g, b) > 218 && Math.max(r, g, b) - Math.min(r, g, b) < 34;
+      return neutralLight || backgrounds.some(([br, bg, bb]) => {
+        const distance = Math.hypot(r - br, g - bg, b - bb);
+        return distance < 52;
+      });
     };
     const add = (index) => { if (!visited[index] && isBackground(index)) { visited[index] = 1; queue.push(index); } };
-    for (let x = 0; x < output.width; x += 2) { add(x); add((output.height - 1) * output.width + x); }
-    for (let y = 0; y < output.height; y += 2) { add(y * output.width); add(y * output.width + output.width - 1); }
+    for (let x = 0; x < output.width; x++) { add(x); add((output.height - 1) * output.width + x); }
+    for (let y = 0; y < output.height; y++) { add(y * output.width); add(y * output.width + output.width - 1); }
     for (let cursor = 0; cursor < queue.length; cursor++) {
       const index = queue[cursor], x = index % output.width, y = Math.floor(index / output.width);
       pixels[index * 4 + 3] = 0;
@@ -133,6 +152,13 @@
       if (x + 1 < output.width) add(index + 1);
       if (y > 0) add(index - output.width);
       if (y + 1 < output.height) add(index + output.width);
+    }
+    for (let index = 0; index < visited.length; index++) {
+      if (visited[index]) continue;
+      const x = index % output.width, y = Math.floor(index / output.width);
+      const touchesClear = (x > 0 && visited[index - 1]) || (x + 1 < output.width && visited[index + 1]) ||
+        (y > 0 && visited[index - output.width]) || (y + 1 < output.height && visited[index + output.width]);
+      if (touchesClear) pixels[index * 4 + 3] = Math.min(pixels[index * 4 + 3], 150);
     }
     context.putImageData(frame, 0, 0);
   }
